@@ -61,10 +61,21 @@ body.has-timer .wrap{padding-bottom:150px}
 .week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
 .day{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;
   padding:9px 0 8px;border:0;border-radius:10px;background:var(--surface);color:var(--ink)}
-.day .wd{font-family:var(--font-display);font-size:21px;line-height:1}
+.day .wd{font-family:var(--font-num);font-size:20px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
 .day .tg{font-size:11px;line-height:1.2;color:var(--ink-2)}
 .day .ck{position:absolute;top:3px;right:5px;font-size:10px;line-height:1;color:var(--done)}
+.day .pt{position:absolute;top:5px;right:6px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.day[aria-pressed="true"] .pt{background:var(--on-accent)}
+.day.out{opacity:.45}
 .day.today{box-shadow:inset 0 -3px 0 var(--ink)}
+.cal{gap:8px}
+.cal-bar{display:flex;align-items:center;gap:6px}
+.cal-title{flex:1;min-width:0;font-size:15px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
+.cal-nav{flex:none;width:36px;height:36px;border:0;border-radius:10px;background:var(--surface);font-size:20px;line-height:1}
+.cal-today{flex:none;height:36px;padding:0 11px;border:0;border-radius:10px;background:var(--surface);font-size:13px}
+.cal-mode{flex:none}
+.cal-mode button{padding:6px 11px}
+.cal-head{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;font-size:11px;color:var(--ink-2);text-align:center}
 .day[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
 .day[aria-pressed="true"] .tg,.day[aria-pressed="true"] .ck{color:var(--on-accent)}
 .day[aria-pressed="true"].today{box-shadow:inset 0 -3px 0 var(--on-accent)}
@@ -80,7 +91,7 @@ body.has-timer .wrap{padding-bottom:150px}
 .pnum b{font-family:var(--font-num);font-size:20px;font-weight:600;color:var(--hero-fg);font-variant-numeric:tabular-nums}
 
 /* controls */
-.controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .ctl{display:flex;flex-direction:column;gap:5px;min-width:0}
 .ctl-l{font-size:12px;color:var(--ink-2);letter-spacing:.06em}
 .seg{display:flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px}
@@ -169,7 +180,21 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
 .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;background:var(--accent);vertical-align:-1px}
 .sw.s{opacity:.38}
 
-.ex-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.ex-foot{display:flex;flex-direction:column;gap:10px}
+.wrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.wlab{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--accent-ink);margin-right:2px}
+.winp{width:66px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-align:center;
+  font-family:var(--font-num);font-size:19px;font-weight:600;padding:0 4px;-moz-appearance:textfield;appearance:textfield}
+.winp::-webkit-outer-spin-button,.winp::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.winp::placeholder{color:var(--ink-2);opacity:.6}
+.winp:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.wunit{font-size:13px;color:var(--ink-2);margin-right:2px}
+.wlast{height:36px;padding:0 12px;border-radius:8px;border:1px dashed var(--accent);background:transparent;color:var(--accent-ink);font-size:13px}
+.whint{font-size:12.5px;color:var(--ink-2);display:flex;flex-wrap:wrap;gap:3px 12px;align-items:center}
+.linkbtn{border:0;background:none;padding:4px 0;color:var(--accent-ink);font-size:12.5px;text-decoration:underline;text-underline-offset:3px}
+.hist{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums;border-left:2px solid var(--line);padding-left:10px}
+.hist b{color:var(--ink);font-family:var(--font-num);font-size:16px;font-weight:600}
+.set:disabled{opacity:.45;cursor:default}
 .sets{display:flex;flex-wrap:wrap;gap:8px}
 .set{width:44px;height:44px;border-radius:22px;border:1.5px solid var(--line);background:transparent;color:var(--ink);
   font-family:var(--font-num);font-size:19px;font-weight:600;line-height:1}
@@ -210,7 +235,21 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
     <p class="intro">按这台三人站的站位排的一周计划，有氧用跑步机爬坡。重点是臀腿、后背和体态，重量从轻开始。新手每周挑 3–4 天练就够，优先臀腿和背。</p>
   </header>
 
-  <nav class="week" id="week" aria-label="本周安排"></nav>
+  <section class="cal" aria-label="训练日历">
+    <div class="cal-bar">
+      <button type="button" class="cal-nav" id="cal-prev" aria-label="往前">‹</button>
+      <p class="cal-title" id="cal-title"></p>
+      <button type="button" class="cal-nav" id="cal-next" aria-label="往后">›</button>
+      <button type="button" class="cal-today" id="cal-today">今天</button>
+      <div class="seg cal-mode" role="group" aria-label="日历显示">
+        <button type="button" id="cal-w" data-cal="w">周</button>
+        <button type="button" id="cal-m" data-cal="m">月</button>
+      </div>
+    </div>
+    <div class="cal-head" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+    <div class="week" id="week"></div>
+    <p class="cap" id="cal-sum" hidden></p>
+  </section>
 
   <section class="hero" id="hero" aria-live="polite"></section>
 
@@ -234,6 +273,13 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
       <div class="seg" role="group" aria-labelledby="dt-l">
         <button type="button" id="dt-1" data-dt="1">详细</button>
         <button type="button" id="dt-0" data-dt="0">精简</button>
+      </div>
+    </div>
+    <div class="ctl">
+      <span class="ctl-l" id="un-l">配重单位</span>
+      <div class="seg" role="group" aria-labelledby="un-l">
+        <button type="button" id="un-p" data-unit="p">片</button>
+        <button type="button" id="un-k" data-unit="k">kg</button>
       </div>
     </div>
   </div>
@@ -273,7 +319,7 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
   <section class="notes">
     <h2>用之前看一眼</h2>
     <ul class="plain">
-      <li><b>选重量：</b>做到最后 2 次有点吃力、动作还不变形，就是合适的。卡片里的片数只是粗略起点。</li>
+      <li><b>选重量：</b>做到最后 2 次有点吃力、动作还不变形，就是合适的。卡片里的起步建议只是粗略起点，一组里换过重量就记最重的那次。</li>
       <li><b>加重量：</b>同一个动作连续两次训练都能做满最高次数，下次加 1 片。力量训练不会把女生练成大块头，放心加。</li>
       <li><b>爬坡：</b>坡度和速度按跑步机能调的范围来，够不到就用最高档。力量日练完想多出汗，可以加 10 分钟坡度 5–8% 的快走。</li>
       <li><b>示意图：</b>小人动画表示动作的起止位置。人体图里深橙色是主要发力的肌肉，浅橙色是辅助；它是简化画法，细节以真人示范为准，视频链接打开的是 B 站搜索结果。</li>
@@ -281,7 +327,7 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
       <li><b>新机器先检查：</b>插销插到底，螺丝拧紧，钢索顺滑没有毛刺，再上重量。</li>
       <li><b>缺配件：</b>没有脚踝绑带时，后踢腿和髋外展改成垫上徒手做。</li>
       <li><b>身体信号：</b>关节刺痛就停。经期或状态差的日子，换成周日的拉伸内容也算完成。</li>
-      <li><b>记录：</b>打卡和配重只保存在这台手机的浏览器里，换设备不会同步。</li>
+      <li><b>记录：</b>每个动作当天用的配重记在卡片里，日历上可以点回任意一天查看和补记。打卡和配重都保存在这台手机的浏览器里，换设备不会同步，清除浏览器数据会丢失。</li>
     </ul>
   </section>
 </div>
@@ -769,29 +815,35 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
 
   // ---------- state ----------
   var KEY = 'sanrenzhan-v1';
-  var S = {lv:0, md:'full', dt:1, w:{}, log:{}};
+  // log[date][exercise] = sets done, wt[date][exercise] = [amount, unit], fin[date] = finished, w = pre-calendar weights
+  var S = {lv:0, md:'full', dt:1, cal:'w', unit:'p', w:{}, log:{}, wt:{}, fin:{}};
   try{
     var saved = JSON.parse(localStorage.getItem(KEY));
     if(saved && typeof saved === 'object'){
       if(saved.lv === 0 || saved.lv === 1) S.lv = saved.lv;
       if(saved.md === 'quick' || saved.md === 'full') S.md = saved.md;
       if(saved.dt === 0 || saved.dt === 1) S.dt = saved.dt;
-      if(saved.w && typeof saved.w === 'object') S.w = saved.w;
-      if(saved.log && typeof saved.log === 'object') S.log = saved.log;
+      if(saved.cal === 'w' || saved.cal === 'm') S.cal = saved.cal;
+      if(saved.unit === 'p' || saved.unit === 'k') S.unit = saved.unit;
+      ['w','log','wt','fin'].forEach(function(n){ if(saved[n] && typeof saved[n] === 'object') S[n] = saved[n]; });
     }
   }catch(e){}
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
-  var now = new Date();
-  var todayIdx = (now.getDay() + 6) % 7;
-  var monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - todayIdx);
-  function dateOf(i){ return new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i); }
-  function keyOf(i){ var d = dateOf(i); return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2); }
-  var sel = todayIdx;
+  function day0(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function addDays(d, n){ return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); }
+  function wdOf(d){ return (d.getDay() + 6) % 7; }
+  function keyOf(d){ return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2); }
+  function dateText(d){ return (d.getMonth()+1) + ' 月 ' + d.getDate() + ' 日'; }
+  function keyText(k){ var p = k.split('-'); return (+p[1]) + ' 月 ' + (+p[2]) + ' 日'; }
+  var today = day0(new Date());
+  var sel = today;                                                  // the day being shown
+  var view = new Date(today.getFullYear(), today.getMonth(), 1);    // month shown in month mode
+  var openHist = {};
 
-  // drop check-offs older than ~8 weeks
-  (function(){ var cut = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 56), k;
-    for(k in S.log){ if(new Date(k + 'T00:00:00') < cut) delete S.log[k]; } })();
+  // keep a little over a year of records
+  (function(){ var cut = keyOf(addDays(today, -400));
+    ['log','wt','fin'].forEach(function(n){ for(var k in S[n]){ if(k < cut) delete S[n][k]; } }); })();
 
   function pick(v){ return Array.isArray(v) ? v[S.lv] : v; }
   function resolve(entry){
@@ -803,17 +855,46 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
             reps:t ? (t >= 120 ? Math.round(t/60) + ' 分钟' : t + ' 秒') : pick(e.r),
             rest:e.rest, load:e.load || null, cue:pick(e.cue), q:!!entry[1], fin:!!e.fin, fig:e.fig || id, v:e.v || e.n, dk:e.dk || id};
   }
-  function listFor(i){
-    var out = DAYS[i].ex.map(resolve);
+  function listFor(idx){
+    var out = DAYS[idx].ex.map(resolve);
     return S.md === 'quick' ? out.filter(function(x){ return x.q; }) : out;
   }
-  function got(i, x){ var d = S.log[keyOf(i)] || {}; return Math.min(x.sets, d[x.id] || 0); }
-  function setCount(i, id, n){
-    var k = keyOf(i); if(!S.log[k]) S.log[k] = {};
-    if(n <= 0) delete S.log[k][id]; else S.log[k][id] = n;
+  function got(dkey, x){ var d = S.log[dkey] || {}; return Math.min(x.sets, d[x.id] || 0); }
+  function setCount(dkey, id, n){
+    if(!S.log[dkey]) S.log[dkey] = {};
+    if(n <= 0) delete S.log[dkey][id]; else S.log[dkey][id] = n;
     save();
   }
-  function dayDone(i){ var l = listFor(i); return l.length > 0 && l.every(function(x){ return got(i,x) >= x.sets; }); }
+  function dayState(d){
+    var dkey = keyOf(d), l = listFor(wdOf(d)), any = false, all = l.length > 0, k;
+    l.forEach(function(x){ var c = got(dkey, x); if(c > 0) any = true; if(c < x.sets) all = false; });
+    if(S.fin[dkey] || all) return 'done';
+    if(any) return 'part';
+    for(k in (S.wt[dkey] || {})) return 'part';
+    return '';
+  }
+  // weight records
+  function recOf(dkey, key){ var w = S.wt[dkey]; return w && w[key] ? w[key] : null; }
+  function setRec(dkey, key, v, u){
+    if(v > 0){ if(!S.wt[dkey]) S.wt[dkey] = {}; S.wt[dkey][key] = [Math.round(v * 100) / 100, u]; }
+    else if(S.wt[dkey]){ delete S.wt[dkey][key]; if(!Object.keys(S.wt[dkey]).length) delete S.wt[dkey]; }
+    save();
+  }
+  function unitText(u){ return u === 'k' ? 'kg' : '片'; }
+  function fmtRec(r){ return r[0] + ' ' + unitText(r[1]); }
+  function recHistory(key, before, max){   // newest first; before = only days earlier than this key ('' = all)
+    var out = [], ks = Object.keys(S.wt).sort().reverse();
+    for(var i = 0; i < ks.length && out.length < max; i++){
+      if(before && ks[i] >= before) continue;
+      if(S.wt[ks[i]][key]) out.push({k:ks[i], r:S.wt[ks[i]][key]});
+    }
+    return out;
+  }
+  function lastRec(key, dkey){
+    var h = recHistory(key, dkey, 1);
+    if(h.length) return h[0];
+    return S.w[key] ? {k:null, r:[S.w[key], 'p']} : null;
+  }
 
   // ---------- stick figures ----------
   var reduced = false;
@@ -886,26 +967,47 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
   var $ = function(id){ return document.getElementById(id); };
   var elWeek = $('week'), elHero = $('hero'), elList = $('list');
 
-  function renderWeek(){
-    elWeek.innerHTML = DAYS.map(function(d,i){
-      var cls = 'day' + (i === todayIdx ? ' today' : ''), done = dayDone(i);
-      return '<button type="button" class="' + cls + '" data-i="' + i + '" aria-pressed="' + (i === sel) + '" aria-label="周' + WD[i] + ' ' + d.k +
-        (i === todayIdx ? '，今天' : '') + (done ? '，已完成' : '') + '">' +
-        (done ? '<span class="ck" aria-hidden="true">✓</span>' : '') +
-        '<span class="wd">' + WD[i] + '</span><span class="tg">' + d.tag + '</span></button>';
-    }).join('');
+  function cell(d, out){
+    var st = dayState(d), isT = d.getTime() === today.getTime(), dd = DAYS[wdOf(d)];
+    return '<button type="button" class="day' + (isT ? ' today' : '') + (out ? ' out' : '') + '" data-d="' + keyOf(d) + '" aria-pressed="' + (d.getTime() === sel.getTime()) +
+      '" aria-label="' + dateText(d) + ' 周' + WD[wdOf(d)] + ' ' + dd.k + (isT ? '，今天' : '') + (st === 'done' ? '，已完成' : (st === 'part' ? '，有记录' : '')) + '">' +
+      (st === 'done' ? '<span class="ck" aria-hidden="true">✓</span>' : (st === 'part' ? '<span class="pt" aria-hidden="true"></span>' : '')) +
+      '<span class="wd">' + d.getDate() + '</span><span class="tg">' + dd.tag + '</span></button>';
+  }
+  function renderCal(){
+    var html = '', title, sum = '', i, d;
+    if(S.cal === 'm'){
+      var start = addDays(view, -wdOf(view)), last = new Date(view.getFullYear(), view.getMonth() + 1, 0);
+      var cells = Math.ceil((wdOf(view) + last.getDate()) / 7) * 7, done = 0;
+      for(i = 0; i < cells; i++){
+        d = addDays(start, i);
+        var out = d.getMonth() !== view.getMonth();
+        html += cell(d, out);
+        if(!out && wdOf(d) !== 6 && dayState(d) === 'done') done++;
+      }
+      title = view.getFullYear() + ' 年 ' + (view.getMonth() + 1) + ' 月';
+      sum = '这个月已完成 ' + done + ' 天训练。✓ 是全部做完，圆点是做了一部分。';
+    } else {
+      var mon = addDays(sel, -wdOf(sel)), sun = addDays(mon, 6);
+      for(i = 0; i < 7; i++) html += cell(addDays(mon, i), false);
+      title = dateText(mon) + ' – ' + (sun.getMonth() !== mon.getMonth() ? dateText(sun) : sun.getDate() + ' 日');
+    }
+    elWeek.innerHTML = html;
+    $('cal-title').textContent = title;
+    $('cal-sum').hidden = S.cal !== 'm'; $('cal-sum').textContent = sum;
+    $('cal-w').setAttribute('aria-pressed', S.cal === 'w'); $('cal-m').setAttribute('aria-pressed', S.cal === 'm');
   }
 
   function renderHero(list){
-    var d = DAYS[sel], dt = dateOf(sel), total = 0, done = 0;
-    list.forEach(function(x){ total += x.sets; done += got(sel, x); });
-    var all = total > 0 && done >= total;
+    var d = DAYS[wdOf(sel)], dkey = keyOf(sel), total = 0, done = 0;
+    list.forEach(function(x){ total += x.sets; done += got(dkey, x); });
+    var all = total > 0 && done >= total, future = sel > today, isT = sel.getTime() === today.getTime();
     elHero.innerHTML =
-      '<p class="eyebrow">周' + WD[sel] + ' · ' + (dt.getMonth()+1) + ' 月 ' + dt.getDate() + ' 日' + (sel === todayIdx ? ' · 今天' : '') + '</p>' +
+      '<p class="eyebrow">周' + WD[wdOf(sel)] + ' · ' + dateText(sel) + (isT ? ' · 今天' : (future ? ' · 计划' : '')) + '</p>' +
       '<h1>' + d.k + '</h1>' +
       '<p class="hsub">' + d.sub + ' · 约 ' + d.min[S.lv][S.md === 'quick' ? 0 : 1] + ' 分钟 · ' + list.length + ' 个动作</p>' +
       '<div class="prog"><i style="transform:scaleX(' + (total ? done/total : 0) + ')"></i></div>' +
-      '<p class="pnum">' + (all ? '今天练完了，记得做放松拉伸。' : '已完成 <b>' + done + '</b> / ' + total + ' 组') + '</p>';
+      '<p class="pnum">' + (all ? (isT ? '今天练完了，记得做放松拉伸。' : '这一天全部完成。') : '已完成 <b>' + done + '</b> / ' + total + ' 组') + '</p>';
   }
 
   function renderMap(list){
@@ -920,28 +1022,44 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
     $(ulId).innerHTML = items ? items.map(function(t){ return '<li>' + t + '</li>'; }).join('') : '';
   }
 
+  function weightBlock(x, dkey, future){
+    if(!x.load) return '';
+    var rec = recOf(dkey, x.key), last = lastRec(x.key, dkey);
+    var hint = '<span>起步建议 ' + HINT[x.load] + '</span>' +
+      (last ? '<span>上次 ' + fmtRec(last.r) + (last.k ? '（' + keyText(last.k) + '）' : '') + '</span>' : '<span>之前没有记录</span>');
+    if(future) return '<p class="whint">' + hint + '</p>';
+    var u = rec ? rec[1] : S.unit;
+    var row = '<div class="wrow"><span class="wlab">配重</span>' +
+      '<button type="button" class="step" data-step="-1" aria-label="' + x.n + ' 减少配重">−</button>' +
+      '<input class="winp" id="w-' + x.id + '" type="number" inputmode="decimal" min="0" step="' + (u === 'k' ? '0.5' : '1') + '" value="' + (rec ? rec[0] : '') +
+      '" placeholder="—" aria-label="' + x.n + ' 用的配重">' +
+      '<span class="wunit">' + unitText(u) + '</span>' +
+      '<button type="button" class="step" data-step="1" aria-label="' + x.n + ' 增加配重">+</button>' +
+      (!rec && last && last.r[1] === S.unit ? '<button type="button" class="wlast" data-uselast="1">沿用上次 ' + fmtRec(last.r) + '</button>' : '') + '</div>';
+    var hist = '';
+    if(openHist[x.key]){
+      var h = recHistory(x.key, '', 8);
+      hist = '<div class="hist">' + (h.length ? h.map(function(q){
+        return '<span>' + keyText(q.k) + ' · <b>' + q.r[0] + '</b> ' + unitText(q.r[1]) + '</span>';
+      }).join('') : '<span>还没有记录</span>') + '</div>';
+    }
+    return row + '<p class="whint">' + hint + '<button type="button" class="linkbtn" data-hist="1">' + (openHist[x.key] ? '收起历史' : '历史记录') + '</button></p>' + hist;
+  }
+
   function renderList(list){
-    var d = DAYS[sel], unit = d.circuit ? '轮' : '组';
+    var idx = wdOf(sel), d = DAYS[idx], dkey = keyOf(sel), future = sel > today, unit = d.circuit ? '轮' : '组';
     var timed = list.some(function(x){ return x.t; });
-    $('main-h').textContent = d.circuit ? '循环训练' : (sel === 6 ? '恢复内容' : '训练');
-    $('main-cap').textContent = d.circuit
+    $('main-h').textContent = d.circuit ? '循环训练' : (idx === 6 ? '恢复内容' : '训练');
+    $('main-cap').textContent = future ? '这是之后的计划，到当天再打卡和记录配重。' : (d.circuit
       ? '按顺序每个动作做 1 组，全部做完算 1 轮。站位之间休息 20 秒，轮与轮之间休息 90 秒，最后上跑步机。'
-      : (sel === 6 ? '今天不上重量。带 ▶ 的圆点点一下开始计时。'
-                   : '做完一组点一个圆点，会自动开始休息计时。' + (timed ? '带 ▶ 的圆点点一下开始计时。' : '') + (S.dt ? '小人演示动作，下面的人体图标出发力的肌肉。' : ''));
+      : (idx === 6 ? '休息日不上重量。带 ▶ 的圆点点一下开始计时。'
+                   : '做完一组点一个圆点，会自动开始休息计时。' + (timed ? '带 ▶ 的圆点点一下开始计时。' : '') + (S.dt ? '小人演示动作，下面的人体图标出发力的肌肉。' : '')));
     elList.innerHTML = list.map(function(x){
-      var c = got(sel, x), dots = '', i;
+      var c = got(dkey, x), dots = '', i;
       for(i = 0; i < x.sets; i++){
-        var cls = 'set' + (x.t ? ' timed' : '') + (i < c ? ' done' : (i === c ? ' next' : ''));
-        dots += '<button type="button" class="' + cls + '" data-i="' + i + '" aria-label="' + x.n + ' 第 ' + (i+1) + ' 组' + (i < c ? '，已完成' : '') + '">' +
+        var cls = 'set' + (x.t ? ' timed' : '') + (i < c ? ' done' : (i === c && !future ? ' next' : ''));
+        dots += '<button type="button" class="' + cls + '" data-i="' + i + '"' + (future ? ' disabled' : '') + ' aria-label="' + x.n + ' 第 ' + (i+1) + ' 组' + (i < c ? '，已完成' : '') + '">' +
           (x.t && i >= c ? '▶ ' : '') + (i+1) + '</button>';
-      }
-      var load = '';
-      if(x.load){
-        var v = S.w[x.key];
-        load = '<div class="load"><span class="load-l">起步 ' + HINT[x.load] + '<br>我用的配重</span>' +
-          '<button type="button" class="step" data-step="-1" aria-label="' + x.n + ' 减 1 片">−</button>' +
-          '<span class="lv' + (v ? '' : ' empty') + '">' + (v ? v + ' 片' : '未记') + '</span>' +
-          '<button type="button" class="step" data-step="1" aria-label="' + x.n + ' 加 1 片">+</button></div>';
       }
       var vid = '<a class="vid" target="_blank" rel="noopener" href="https://search.bilibili.com/all?keyword=' + encodeURIComponent(x.v + ' 动作教学') + '">看真人示范视频 ↗</a>';
       var g = DT[x.dk], body;
@@ -960,14 +1078,14 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
         '<div class="ex-title"><h3>' + x.n + '</h3><p class="ex-meta"><b>' + x.sets + '</b> ' + (x.fin ? '组' : unit) + ' × <b class="cn">' + x.reps + '</b>' +
         (x.rest ? ' · 休息 ' + x.rest + ' 秒' : '') + '</p></div></div>' +
         body +
-        '<div class="ex-foot"><div class="sets">' + dots + '</div>' + load + '</div></li>';
+        '<div class="ex-foot"><div class="sets">' + dots + '</div>' + weightBlock(x, dkey, future) + '</div></li>';
     }).join('');
     mountFigs();
   }
 
   function render(){
-    var list = listFor(sel), d = DAYS[sel];
-    renderWeek(); renderHero(list); renderMap(list);
+    var idx = wdOf(sel), list = listFor(idx), d = DAYS[idx];
+    renderCal(); renderHero(list); renderMap(list);
     $('warm-h').textContent = '热身 · ' + (d.wm || 5) + ' 分钟';
     renderPlain('warm-sec', 'warm', d.warm);
     renderList(list);
@@ -975,6 +1093,7 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
     $('lv-0').setAttribute('aria-pressed', S.lv === 0); $('lv-1').setAttribute('aria-pressed', S.lv === 1);
     $('md-quick').setAttribute('aria-pressed', S.md === 'quick'); $('md-full').setAttribute('aria-pressed', S.md === 'full');
     $('dt-1').setAttribute('aria-pressed', S.dt === 1); $('dt-0').setAttribute('aria-pressed', S.dt === 0);
+    $('un-p').setAttribute('aria-pressed', S.unit === 'p'); $('un-k').setAttribute('aria-pressed', S.unit === 'k');
   }
 
   // ---------- timer ----------
@@ -1035,17 +1154,23 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
   });
 
   // ---------- actions ----------
+  function findX(id){
+    var list = listFor(wdOf(sel));
+    for(var i = 0; i < list.length; i++){ if(list[i].id === id) return list[i]; }
+    return null;
+  }
   function complete(id){
-    var list = listFor(sel), x = null, i, k, c;
+    var idx = wdOf(sel), dkey = keyOf(sel), list = listFor(idx), x = null, i, k, c;
     for(i = 0; i < list.length; i++){ if(list[i].id === id){ x = list[i]; break; } }
     if(!x){ stopTimer(); return; }
-    setCount(sel, id, got(sel, x) + 1);
-    render();
-    var open = function(y){ return got(sel, y) < y.sets; };
+    setCount(dkey, id, got(dkey, x) + 1);
+    var open = function(y){ return got(dkey, y) < y.sets; };
     var left = list.filter(open);
+    if(!left.length){ S.fin[dkey] = 1; save(); }
+    render();
     if(!left.length){ stopTimer(); return; }
     var rest = x.rest, next = null;
-    if(DAYS[sel].circuit){
+    if(DAYS[idx].circuit){
       var rot = list.filter(function(y){ return !y.fin; }), pos = rot.indexOf(x);
       if(pos >= 0){
         for(k = 1; k <= rot.length; k++){
@@ -1063,32 +1188,59 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
   elList.addEventListener('click', function(e){
     var b = e.target.closest('button'); if(!b) return;
     var li = b.closest('.ex'); if(!li) return;
-    var id = li.dataset.id, list = listFor(sel), x = null;
-    for(var i = 0; i < list.length; i++){ if(list[i].id === id){ x = list[i]; break; } }
-    if(!x) return;
+    var x = findX(li.dataset.id); if(!x) return;
+    var dkey = keyOf(sel);
+    if(b.dataset.hist){ openHist[x.key] = !openHist[x.key]; render(); return; }
+    if(sel > today) return;
     if(b.classList.contains('set')){
       primeAudio();
-      var idx = +b.dataset.i, c = got(sel, x);
-      if(idx < c){ stopTimer(); setCount(sel, id, idx); render(); }
-      else if(x.t){ startTimer('work', x.t, {id:id, name:x.n, idx:c, of:x.sets}); }
-      else { complete(id); }
+      var idx = +b.dataset.i, c = got(dkey, x);
+      if(idx < c){ stopTimer(); setCount(dkey, x.id, idx); delete S.fin[dkey]; save(); render(); }
+      else if(x.t){ startTimer('work', x.t, {id:x.id, name:x.n, idx:c, of:x.sets}); }
+      else { complete(x.id); }
     } else if(b.dataset.step){
-      var v = (S.w[x.key] || 0) + (+b.dataset.step);
-      v = Math.max(0, Math.min(30, v));
-      if(v === 0) delete S.w[x.key]; else S.w[x.key] = v;
-      save(); render();
+      var rec = recOf(dkey, x.key), u = rec ? rec[1] : S.unit, step = u === 'k' ? 2.5 : 1, last = lastRec(x.key, dkey);
+      var base = rec ? rec[0] : (last && last.r[1] === u ? last.r[0] : 0);
+      setRec(dkey, x.key, Math.max(0, base + (+b.dataset.step) * step), u);
+      render();
+    } else if(b.dataset.uselast){
+      var lr = lastRec(x.key, dkey);
+      if(lr){ setRec(dkey, x.key, lr.r[0], lr.r[1]); render(); }
     }
+  });
+  // typing a weight directly: save without rebuilding the list, so the next field keeps its focus
+  elList.addEventListener('change', function(e){
+    var inp = e.target; if(!inp.classList || !inp.classList.contains('winp')) return;
+    var li = inp.closest('.ex'), x = li && findX(li.dataset.id);
+    if(!x || sel > today) return;
+    var dkey = keyOf(sel), rec = recOf(dkey, x.key), v = parseFloat(inp.value);
+    setRec(dkey, x.key, v > 0 ? v : 0, rec ? rec[1] : S.unit);
+    if(!(v > 0)) inp.value = '';
+    var chip = li.querySelector('.wlast'); if(chip) chip.remove();
+    renderCal();
   });
 
   elWeek.addEventListener('click', function(e){
     var b = e.target.closest('button'); if(!b) return;
-    sel = +b.dataset.i; stopTimer(); render();
+    var p = b.dataset.d.split('-');
+    sel = new Date(+p[0], +p[1] - 1, +p[2]);
+    if(sel.getMonth() !== view.getMonth() || sel.getFullYear() !== view.getFullYear()) view = new Date(sel.getFullYear(), sel.getMonth(), 1);
+    stopTimer(); render();
+  });
+  document.querySelector('.cal-bar').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    if(b.dataset.cal){ S.cal = b.dataset.cal; view = new Date(sel.getFullYear(), sel.getMonth(), 1); save(); renderCal(); return; }
+    if(b.id === 'cal-today'){ sel = today; view = new Date(today.getFullYear(), today.getMonth(), 1); stopTimer(); render(); return; }
+    var dir = b.id === 'cal-prev' ? -1 : (b.id === 'cal-next' ? 1 : 0); if(!dir) return;
+    if(S.cal === 'm'){ view = new Date(view.getFullYear(), view.getMonth() + dir, 1); renderCal(); }
+    else { sel = addDays(sel, 7 * dir); view = new Date(sel.getFullYear(), sel.getMonth(), 1); stopTimer(); render(); }
   });
   document.querySelector('.controls').addEventListener('click', function(e){
     var b = e.target.closest('button'); if(!b) return;
+    if(b.dataset.dt != null){ S.dt = +b.dataset.dt; save(); render(); return; }
+    if(b.dataset.unit){ S.unit = b.dataset.unit; save(); render(); return; }
     if(b.dataset.lv != null) S.lv = +b.dataset.lv;
     if(b.dataset.md) S.md = b.dataset.md;
-    if(b.dataset.dt != null){ S.dt = +b.dataset.dt; save(); render(); return; }
     save(); stopTimer(); render();
   });
 
