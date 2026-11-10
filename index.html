@@ -1,0 +1,1100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="按家用三人站和跑步机编排的一周训练计划，每个动作带肌肉标注图、发力点和分步说明。">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="三人站训练">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>三人站每日训练</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=ZCOOL+QingKe+HuangYou&display=swap" media="print" onload="this.media='all'">
+<style>
+/* Layout: phone-first single column. Week strip -> day band -> station grid (mirrors the machine's left / main frame / right)
+   -> exercise rows: moving stick figure + cue, then tappable set dots. The rest timer docks to the bottom edge. */
+:root{
+  --bg:#ECF1EE; --surface:#FFFFFF; --surface-2:#DEE7E2; --ink:#12302A; --ink-2:#4A645D; --line:#C8D5CF;
+  --accent:#D2500C; --accent-ink:#AE430B; --accent-soft:#FBE4D5; --on-accent:#FFFFFF;
+  --done:#1D8658; --on-done:#FFFFFF;
+  --hero-bg:#12302A; --hero-fg:#EFF5F2; --hero-dim:#A9C2BA; --hero-line:#2F5048;
+  --body:#E2E9E5; --muscle:#C2CFC9;
+  --font-display:"ZCOOL QingKe HuangYou","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --font-body:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",sans-serif;
+  --font-num:"Barlow Condensed","DIN Alternate","Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1B18; --surface:#142622; --surface-2:#1D352F; --ink:#E6F0EC; --ink-2:#9DB5AE; --line:#2A4740;
+    --accent:#FF8A4C; --accent-ink:#FFA574; --accent-soft:#3B2618; --on-accent:#1A0E06;
+    --done:#4FCB93; --on-done:#062014;
+    --hero-bg:#1A332D; --hero-fg:#EAF3EF; --hero-dim:#9DB6AE; --hero-line:#35564E; --body:#213933; --muscle:#32524A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1B18; --surface:#142622; --surface-2:#1D352F; --ink:#E6F0EC; --ink-2:#9DB5AE; --line:#2A4740;
+  --accent:#FF8A4C; --accent-ink:#FFA574; --accent-soft:#3B2618; --on-accent:#1A0E06;
+  --done:#4FCB93; --on-done:#062014;
+  --hero-bg:#1A332D; --hero-fg:#EAF3EF; --hero-dim:#9DB6AE; --hero-line:#35564E; --body:#213933; --muscle:#32524A;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.6;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3,p,ul{margin:0}
+ul{padding:0;list-style:none}
+
+.wrap{max-width:600px;margin:0 auto;display:flex;flex-direction:column;gap:22px;
+  padding-block:20px 56px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px))}
+body.has-timer .wrap{padding-bottom:150px}
+
+.top{display:flex;flex-direction:column;gap:6px}
+.brand{font-family:var(--font-display);font-size:24px;line-height:1.2;letter-spacing:.02em}
+.intro{color:var(--ink-2);font-size:14px;max-width:34em}
+
+/* week strip */
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.day{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;
+  padding:9px 0 8px;border:0;border-radius:10px;background:var(--surface);color:var(--ink)}
+.day .wd{font-family:var(--font-display);font-size:21px;line-height:1}
+.day .tg{font-size:11px;line-height:1.2;color:var(--ink-2)}
+.day .ck{position:absolute;top:3px;right:5px;font-size:10px;line-height:1;color:var(--done)}
+.day.today{box-shadow:inset 0 -3px 0 var(--ink)}
+.day[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.day[aria-pressed="true"] .tg,.day[aria-pressed="true"] .ck{color:var(--on-accent)}
+.day[aria-pressed="true"].today{box-shadow:inset 0 -3px 0 var(--on-accent)}
+
+/* day band */
+.hero{background:var(--hero-bg);color:var(--hero-fg);border-radius:16px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-size:12px;letter-spacing:.08em;color:var(--hero-dim)}
+.hero h1{font-family:var(--font-display);font-weight:400;font-size:44px;line-height:1.08;letter-spacing:.02em;text-wrap:balance}
+.hsub{font-size:14px;color:var(--hero-dim)}
+.prog{height:6px;border-radius:3px;background:var(--hero-line);overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;background:var(--accent);transform-origin:left center;transition:transform .25s ease}
+.pnum{font-size:13px;color:var(--hero-dim)}
+.pnum b{font-family:var(--font-num);font-size:20px;font-weight:600;color:var(--hero-fg);font-variant-numeric:tabular-nums}
+
+/* controls */
+.controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ctl{display:flex;flex-direction:column;gap:5px;min-width:0}
+.ctl-l{font-size:12px;color:var(--ink-2);letter-spacing:.06em}
+.seg{display:flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px}
+.seg button{flex:1;min-width:0;border:0;background:transparent;padding:8px 2px;border-radius:8px;color:var(--ink-2);font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:600}
+
+section{display:flex;flex-direction:column;gap:10px}
+h2{font-size:15px;font-weight:600;letter-spacing:.02em}
+.cap{font-size:13px;color:var(--ink-2)}
+
+/* station grid */
+.map{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:repeat(4,minmax(48px,auto)) auto;gap:6px}
+.stn{display:flex;flex-direction:column;justify-content:center;gap:1px;min-width:0;padding:6px 9px;border:1px dashed var(--line);border-radius:8px;color:var(--ink-2)}
+.stn b{font-family:var(--font-num);font-size:19px;font-weight:700;line-height:1}
+.stn span{font-size:12px;line-height:1.3}
+.stn.on{border:1px solid var(--accent);background:var(--accent-soft);color:var(--ink)}
+.stn.on b{color:var(--accent-ink)}
+.s-H{grid-column:1;grid-row:1 / span 2}
+.s-E{grid-column:1;grid-row:3 / span 2}
+.s-B{grid-column:2;grid-row:1}
+.s-A{grid-column:2;grid-row:2}
+.s-D{grid-column:2;grid-row:3}
+.s-C{grid-column:2;grid-row:4}
+.s-F{grid-column:3;grid-row:1 / span 2}
+.s-G{grid-column:3;grid-row:3 / span 2}
+.s-T{grid-column:1 / -1;grid-row:5;flex-direction:row;align-items:baseline;justify-content:flex-start;gap:8px;padding-block:9px}
+
+/* plain lists */
+.plain{display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--ink-2)}
+.plain li{position:relative;padding-left:16px}
+.plain li::before{content:"";position:absolute;left:2px;top:.72em;width:6px;height:2px;background:var(--accent)}
+.plain b{color:var(--ink);font-weight:600}
+
+/* exercise rows */
+.list{background:var(--surface);border-radius:14px}
+.ex{padding:16px;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line)}
+.ex:first-child{border-top:0}
+.ex-head{display:flex;gap:12px;align-items:flex-start}
+.chip{flex:none;width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-ink);
+  font-family:var(--font-num);font-size:20px;font-weight:700;line-height:1}
+.chip.free{font-family:var(--font-body);font-size:13px;font-weight:600;background:var(--surface-2);color:var(--ink-2)}
+.ex-title{min-width:0;display:flex;flex-direction:column;gap:2px}
+.ex h3{font-size:17px;font-weight:600;line-height:1.3}
+.ex-meta{font-size:13px;color:var(--ink-2)}
+.ex-meta b{font-family:var(--font-num);font-size:18px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.ex-meta .cn{font-family:var(--font-body);font-size:14px}
+.ex-body{display:flex;gap:12px;align-items:flex-start}
+.ex-text{min-width:0;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.cue{font-size:14px;color:var(--ink-2)}
+.vid{font-size:13px;color:var(--accent-ink);text-decoration:underline;text-underline-offset:3px;align-self:flex-start}
+.kv{font-size:14px;color:var(--ink-2)}
+.kv .k{display:inline-block;margin-right:7px;font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--accent-ink)}
+.kv.main{color:var(--ink)}
+.steps{margin:0;padding:0;list-style:none;counter-reset:st;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--ink)}
+.steps li{counter-increment:st;position:relative;padding-left:26px}
+.steps li::before{content:counter(st);position:absolute;left:0;top:.18em;width:18px;height:18px;border-radius:9px;display:grid;place-items:center;
+  background:var(--surface-2);color:var(--ink);font-family:var(--font-num);font-size:13px;font-weight:600;line-height:1}
+
+/* stick figures */
+.fig{flex:none;width:112px;max-width:34%;height:auto;aspect-ratio:120 / 96;background:var(--surface-2);border-radius:10px}
+.fig path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.f-prop{stroke:var(--ink-2);stroke-width:2;opacity:.45}
+.f-ghost{stroke:var(--ink-2);stroke-width:3;opacity:.3}
+.f-focus{stroke:var(--accent);stroke-width:15;opacity:.4;animation:fpulse 1.4s ease-in-out infinite alternate}
+@keyframes fpulse{from{opacity:.22}to{opacity:.5}}
+.f-far{stroke:var(--ink-2);stroke-width:2.6;opacity:.75}
+.f-load{stroke:var(--accent);stroke-width:1.6}
+.f-near{stroke:var(--ink);stroke-width:3.4}
+.f-head{fill:var(--ink)}
+.f-grip{stroke:var(--accent);stroke-width:6}
+
+/* muscle map */
+.mus{border:1px solid var(--line);border-radius:10px;padding:8px 2px 8px;margin-inline:-8px;display:flex;flex-direction:column;gap:4px}
+.mm{display:block;width:100%;height:auto;max-width:470px;margin:0 auto}
+.mm .bd{fill:var(--body)}
+.mm .bl{stroke:var(--body);fill:none;stroke-linecap:round}
+.mm .mu{fill:var(--muscle);stroke:var(--body);stroke-width:.7;stroke-linejoin:round}
+.mm .mu.p{fill:var(--accent)}
+.mm .mu.s{fill:var(--accent);fill-opacity:.38}
+.mm text{font-family:var(--font-body);font-size:11.5px;fill:var(--ink-2)}
+.mm text.p{fill:var(--ink);font-weight:600}
+.mm text.cap{font-size:10px;letter-spacing:.12em}
+.mm .ld{stroke:var(--ink-2);stroke-width:.7;fill:none}
+.mm .dot{fill:var(--ink)}
+.mus-lg{display:flex;gap:16px;justify-content:center;font-size:12px;color:var(--ink-2)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;background:var(--accent);vertical-align:-1px}
+.sw.s{opacity:.38}
+
+.ex-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.sets{display:flex;flex-wrap:wrap;gap:8px}
+.set{width:44px;height:44px;border-radius:22px;border:1.5px solid var(--line);background:transparent;color:var(--ink);
+  font-family:var(--font-num);font-size:19px;font-weight:600;line-height:1}
+.set.timed{width:auto;padding:0 14px}
+.set.next{border-color:var(--accent);color:var(--accent-ink)}
+.set.done{background:var(--done);border-color:var(--done);color:var(--on-done)}
+.load{display:flex;align-items:center;gap:6px}
+.load-l{font-size:12px;color:var(--ink-2);line-height:1.35;text-align:right}
+.step{width:36px;height:36px;border-radius:8px;border:1px solid var(--line);background:transparent;font-size:18px;line-height:1}
+.lv{min-width:46px;text-align:center;font-family:var(--font-num);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+.lv.empty{font-family:var(--font-body);font-size:13px;font-weight:400;color:var(--ink-2)}
+
+.notes{border-top:1px solid var(--line);padding-top:20px}
+
+/* rest timer */
+#timer{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--hero-bg);color:var(--hero-fg)}
+.t-prog{height:3px;background:var(--hero-line)}
+.t-prog i{display:block;height:100%;background:var(--accent);transform-origin:left center}
+.t-in{max-width:600px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;
+  padding-top:10px;padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.t-info{flex:1 1 120px;min-width:0;display:flex;flex-direction:column}
+#t-label{font-size:12px;letter-spacing:.08em;color:var(--hero-dim)}
+#t-next{font-size:14px;line-height:1.35}
+#t-clock{font-family:var(--font-num);font-size:40px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.t-btns{display:flex;gap:8px}
+.t-btns button{height:40px;padding:0 14px;border-radius:10px;font-size:14px;border:1px solid var(--hero-dim);background:transparent;color:var(--hero-fg)}
+.t-btns button.main{border-color:var(--accent);background:var(--accent);color:var(--on-accent);font-weight:600}
+
+@media (prefers-reduced-motion: reduce){.prog i{transition:none}.f-focus{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <p class="brand">三人站每日训练</p>
+    <p class="intro">按这台三人站的站位排的一周计划，有氧用跑步机爬坡。重点是臀腿、后背和体态，重量从轻开始。新手每周挑 3–4 天练就够，优先臀腿和背。</p>
+  </header>
+
+  <nav class="week" id="week" aria-label="本周安排"></nav>
+
+  <section class="hero" id="hero" aria-live="polite"></section>
+
+  <div class="controls">
+    <div class="ctl">
+      <span class="ctl-l" id="lv-l">水平</span>
+      <div class="seg" role="group" aria-labelledby="lv-l">
+        <button type="button" id="lv-0" data-lv="0">新手</button>
+        <button type="button" id="lv-1" data-lv="1">有基础</button>
+      </div>
+    </div>
+    <div class="ctl">
+      <span class="ctl-l" id="md-l">时长</span>
+      <div class="seg" role="group" aria-labelledby="md-l">
+        <button type="button" id="md-quick" data-md="quick">快速</button>
+        <button type="button" id="md-full" data-md="full">完整</button>
+      </div>
+    </div>
+    <div class="ctl">
+      <span class="ctl-l" id="dt-l">说明</span>
+      <div class="seg" role="group" aria-labelledby="dt-l">
+        <button type="button" id="dt-1" data-dt="1">详细</button>
+        <button type="button" id="dt-0" data-dt="0">精简</button>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <h2>今天用到的站位</h2>
+    <p class="cap">面对机器看：左边是蹬腿，中间是主架，右边是引体塔和仰卧板。跑步机单独在最下面一格。亮起的是今天要用的。</p>
+    <div class="map" id="map">
+      <div class="stn s-H" data-st="H"><b>H</b><span>沙袋 · 暂不用</span></div>
+      <div class="stn s-E" data-st="E"><b>E</b><span>蹬腿踏板</span></div>
+      <div class="stn s-B" data-st="B"><b>B</b><span>高位滑轮 · 下拉杆</span></div>
+      <div class="stn s-A" data-st="A"><b>A</b><span>蝴蝶臂 · 推胸</span></div>
+      <div class="stn s-D" data-st="D"><b>D</b><span>腿屈伸滚轴</span></div>
+      <div class="stn s-C" data-st="C"><b>C</b><span>低位滑轮</span></div>
+      <div class="stn s-F" data-st="F"><b>F</b><span>引体 · 双杠塔</span></div>
+      <div class="stn s-G" data-st="G"><b>G</b><span>仰卧板</span></div>
+      <div class="stn s-T" data-st="T"><b>T</b><span>跑步机 · 爬坡</span></div>
+    </div>
+  </section>
+
+  <section id="warm-sec">
+    <h2 id="warm-h">热身</h2>
+    <ul class="plain" id="warm"></ul>
+  </section>
+
+  <section>
+    <h2 id="main-h">训练</h2>
+    <p class="cap" id="main-cap"></p>
+    <ul class="list" id="list"></ul>
+  </section>
+
+  <section id="cool-sec">
+    <h2>放松拉伸 · 5 分钟</h2>
+    <ul class="plain" id="cool"></ul>
+  </section>
+
+  <section class="notes">
+    <h2>用之前看一眼</h2>
+    <ul class="plain">
+      <li><b>选重量：</b>做到最后 2 次有点吃力、动作还不变形，就是合适的。卡片里的片数只是粗略起点。</li>
+      <li><b>加重量：</b>同一个动作连续两次训练都能做满最高次数，下次加 1 片。力量训练不会把女生练成大块头，放心加。</li>
+      <li><b>爬坡：</b>坡度和速度按跑步机能调的范围来，够不到就用最高档。力量日练完想多出汗，可以加 10 分钟坡度 5–8% 的快走。</li>
+      <li><b>示意图：</b>小人动画表示动作的起止位置。人体图里深橙色是主要发力的肌肉，浅橙色是辅助；它是简化画法，细节以真人示范为准，视频链接打开的是 B 站搜索结果。</li>
+      <li><b>找不到发力感：</b>先把重量减到最轻，放慢到 3 秒一次，做的时候用手摸着目标肌肉。还是别的地方先酸，就对照卡片里的易错点检查。</li>
+      <li><b>新机器先检查：</b>插销插到底，螺丝拧紧，钢索顺滑没有毛刺，再上重量。</li>
+      <li><b>缺配件：</b>没有脚踝绑带时，后踢腿和髋外展改成垫上徒手做。</li>
+      <li><b>身体信号：</b>关节刺痛就停。经期或状态差的日子，换成周日的拉伸内容也算完成。</li>
+      <li><b>记录：</b>打卡和配重只保存在这台手机的浏览器里，换设备不会同步。</li>
+    </ul>
+  </section>
+</div>
+
+<div id="timer" hidden>
+  <div class="t-prog"><i id="t-bar"></i></div>
+  <div class="t-in">
+    <div class="t-info"><span id="t-label"></span><span id="t-next"></span></div>
+    <div id="t-clock">0:00</div>
+    <div class="t-btns"><button type="button" id="t-a"></button><button type="button" id="t-b" class="main"></button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var HINT = {'轻':'1–2 片','中':'2–4 片','偏重':'4 片以上'};
+  var WD = ['一','二','三','四','五','六','日'];
+  var LEAN = '不要抓着扶手往后仰，身体略前倾、全脚掌落地。强度以还能断续说话为准。';
+
+  // Exercise library. s = sets [新手, 有基础]; r = reps; t = seconds (timed); b = 新手替代版; v = 视频搜索词
+  var EX = {
+    legpress:{n:'蹬腿',st:'E',s:[3,4],r:['12–15 次','10–12 次'],rest:60,load:'偏重',v:'坐姿蹬腿',
+      cue:'双脚放在踏板偏上的位置，与肩同宽。慢慢屈膝 2 秒，蹬直时膝盖别锁死。'},
+    legpressw:{n:'宽站位蹬腿',st:'E',wk:'legpress',fig:'legpress',s:[3,4],r:['12 次','10–12 次'],rest:60,load:'偏重',v:'宽距蹬腿',
+      cue:'双脚比肩宽、脚尖外开约 30 度，膝盖始终对着脚尖方向。更多练到大腿内侧和臀部。'},
+    legext:{n:'坐姿腿屈伸',st:'D',s:[3,3],r:'12–15 次',rest:45,load:'中',
+      cue:'背贴靠垫，脚背勾住下方滚轴。抬到腿伸直停 1 秒，再慢慢放下。'},
+    legcurl:{n:'站姿单腿弯举',st:'D',s:[2,3],r:['每侧 10–12 次','每侧 12 次'],rest:45,load:'轻',v:'站姿腿弯举',
+      cue:'面向座椅站稳扶好，脚跟勾住下方滚轴向臀部弯。你的机器这个位置做不了的话，换成单腿臀桥。'},
+    kickback:{n:'绳索后踢腿',st:'C',s:[2,3],r:['每侧 12 次','每侧 15 次'],rest:45,load:'轻',
+      cue:'脚踝绑带挂在低位滑轮，手扶机架、上身略前倾，向后上方踢。腰不要跟着塌。'},
+    abduct:{n:'绳索髋外展',st:'C',s:[2,3],r:'每侧 15 次',rest:40,load:'轻',
+      cue:'侧身站，外侧脚绑带，腿向外打开 30–40 度，身体不要歪。'},
+    pullthrough:{n:'绳索拉通',st:'C',s:[3,3],r:['12 次','15 次'],rest:60,load:'中',v:'绳索臀推 拉通',
+      cue:'背对机器跨站在绳索上，双手从两腿之间握住绳子。屁股向后坐、背打直，再夹臀站直。'},
+    bridge:{n:'臀桥',st:'Z',s:[3,3],r:['15 次','20 次'],rest:40,
+      cue:'仰卧屈膝，脚跟踩地把臀部顶起，最高点夹紧 2 秒。想加难度就把脚踩在哑铃凳上。'},
+    split:{n:'后脚抬高分腿蹲',st:'Z',s:3,r:'每侧 10–12 次',rest:60,v:'保加利亚分腿蹲',
+      cue:'后脚搭在哑铃凳上，前腿下蹲到大腿接近水平，上身略前倾。',
+      b:{n:'原地弓步蹲',fig:'lunge',dk:'lunge',v:'原地弓步蹲',s:2,r:'每侧 8 次',cue:'前后脚站开一大步，垂直下蹲到后膝快碰地再站起。站不稳就手扶机架。'}},
+    kneeraise:{n:'靠背提膝',st:'F',s:[2,3],r:['8–10 次','12 次'],rest:45,v:'罗马椅提膝',
+      cue:'前臂撑在塔架扶手上、背贴靠垫，收腹把膝盖提到髋部高度，慢放不要甩。'},
+    deadbug:{n:'死虫式',st:'Z',s:[2,3],r:['每侧 8 次','每侧 10 次'],rest:30,
+      cue:'仰卧，手臂和大腿垂直地面。对侧手脚慢慢伸直放低，下背始终贴地。'},
+    pulldown:{n:'高位下拉',st:'B',s:[3,4],r:['10–12 次','8–10 次'],rest:60,load:'中',
+      cue:'握距比肩略宽，先把肩膀往下沉，再把横杆拉到锁骨。上身只微微后倾，别耸肩。'},
+    row:{n:'坐姿划船',st:'C',s:[3,3],r:'12 次',rest:60,load:'中',v:'坐姿绳索划船',
+      cue:'坐在地上，双脚抵住底座，背挺直。把把手拉向肚脐，肩胛骨向中间夹。'},
+    revfly:{n:'反向飞鸟',st:'A',s:[2,3],r:['12–15 次','15 次'],rest:45,load:'轻',v:'蝴蝶机反向飞鸟',
+      cue:'面朝靠垫坐，手臂微屈向两侧后方打开。练的是肩后和上背，对圆肩有帮助，重量要轻。'},
+    strdown:{n:'直臂下压',st:'B',s:[2,3],r:'12 次',rest:45,load:'轻',v:'绳索直臂下压',
+      cue:'站在高位滑轮前，手臂几乎伸直，把横杆从眼前压到大腿前。'},
+    curl:{n:'绳索弯举',st:'C',s:[2,3],r:'12 次',rest:45,load:'轻',
+      cue:'大臂夹住身体不动，只弯手肘，放下时别一下松掉。'},
+    pushdown:{n:'三头绳下压',st:'B',s:[2,3],r:['12 次','12–15 次'],rest:45,load:'轻',v:'绳索下压 肱三头肌',
+      cue:'大臂贴住身体，压到手臂伸直时把绳子向两边分开。练手臂后侧。'},
+    pullneg:{n:'离心引体',st:'F',s:3,r:'3–5 次',rest:75,v:'离心引体向上',
+      cue:'踩凳子跳到下巴过杠的位置，用 3–5 秒慢慢放下来。',
+      b:{n:'悬挂',fig:'hang',dk:'hangb',v:'单杠悬挂',s:2,t:15,rest:45,cue:'握住引体把手自然悬挂，肩膀微微下沉，不要完全松垮。'}},
+    press:{n:'坐姿推胸',st:'A',s:[3,3],r:['10–12 次','8–10 次'],rest:60,load:'中',
+      cue:'调好蝴蝶臂档位，让把手在胸部中段高度。背贴靠垫，推到手臂快伸直，再慢慢收回。'},
+    fly:{n:'蝴蝶夹胸',st:'A',s:[2,3],r:'12–15 次',rest:45,load:'轻',v:'蝴蝶机夹胸',
+      cue:'手肘微屈，像抱一棵大树那样向中间合拢，合到最里面停 1 秒。'},
+    facepull:{n:'绳索面拉',st:'B',s:[3,3],r:'15 次',rest:45,load:'轻',
+      cue:'三头绳挂高位，拉向眉心，手肘抬到和肩一样高并向两侧打开。久坐含胸的人很值得做。'},
+    lateral:{n:'绳索侧平举',st:'C',s:[2,3],r:['每侧 10–12 次','每侧 12–15 次'],rest:40,load:'轻',
+      cue:'侧身站，用最轻的重量，手臂向侧面抬到与肩同高即可，不要耸肩。'},
+    dip:{n:'双杠离心下放',st:'F',s:3,r:'4–6 次',rest:75,v:'双杠臂屈伸 离心',
+      cue:'在双杠上撑直，用 3 秒慢慢屈肘下放，脚落地后再跳回起始位置。',
+      b:{n:'凳上反屈伸',st:'Z',fig:'benchdip',dk:'benchdip',v:'凳上反屈伸',s:2,r:'8–10 次',rest:60,cue:'背对哑铃凳，双手撑在凳沿，屈肘下放臀部再撑起。膝盖弯着更轻松。'}},
+    kcrunch:{n:'跪姿绳索卷腹',st:'B',s:[2,3],r:['12 次','15 次'],rest:45,load:'轻',
+      cue:'跪在高位滑轮前，双手握绳固定在耳侧，像鞠躬一样把胸口卷向骨盆，臀部不要往后坐。'},
+    crunch:{n:'仰卧板卷腹',st:'G',s:[2,3],r:['10–12 次','15 次'],rest:40,
+      cue:'脚勾住滚轴，手放耳侧不抱头。卷到肩胛骨离开板面即可，下背不用完全抬起。'},
+    plank:{n:'平板支撑',st:'Z',s:[3,3],t:[20,40],rest:30,
+      cue:'肘在肩正下方，身体成一条直线，收紧小腹和臀部。'},
+    twist:{n:'俄罗斯转体',st:'Z',s:[2,3],r:['16 次','20 次'],rest:30,
+      cue:'坐姿屈膝、上身后倾，双手合十左右转体，左右各算 1 次。'},
+    incwarm:{n:'爬坡热身段',st:'T',fig:'incline',v:'跑步机爬坡 正确姿势',s:1,t:180,rest:0,
+      cue:'坡度 2–3%，速度 4–4.5 km/h（约 2.5–2.8 mph），先把身体走热。'},
+    incmain:{n:'爬坡主段',st:'T',fig:'incline',v:'跑步机爬坡 正确姿势',s:1,t:[1200,1800],rest:0,
+      cue:['坡度 6–8%，速度 4.5 km/h（约 2.8 mph）。' + LEAN, '坡度 10–12%，速度 4.8–5 km/h（约 3 mph）。' + LEAN]},
+    inccool:{n:'爬坡收尾段',st:'T',fig:'incline',v:'跑步机爬坡 正确姿势',s:1,t:180,rest:0,
+      cue:'坡度降到 0–2%，放慢速度，走到呼吸平稳再下机。'},
+    incfin:{n:'爬坡收尾',st:'T',fig:'incline',v:'跑步机爬坡 正确姿势',s:1,t:[600,900],rest:0,fin:true,
+      cue:['循环全部做完再上跑步机。坡度 5–6%，速度 4.5 km/h（约 2.8 mph），最后 2 分钟把坡度降下来。',
+           '循环全部做完再上跑步机。坡度 8–10%，速度 5 km/h（约 3 mph），最后 2 分钟把坡度降下来。']},
+    walk:{n:'散步或跑步机慢走',st:'T',v:'跑步机 慢走',s:1,r:'20–30 分钟',rest:0,
+      cue:'出门走走，或者在跑步机上不开坡度慢走。心率微微升高，还能正常聊天。'},
+    hang:{n:'悬挂放松',st:'F',v:'单杠悬挂 放松',s:2,t:[15,20],rest:30,
+      cue:'握住引体把手让身体自然下垂，给脊柱和肩膀减压。脚尖可以点地分担重量。'},
+    catcow:{n:'猫牛式',st:'Z',s:1,r:'10 次',rest:0,
+      cue:'四点跪，吸气塌腰抬头，呼气拱背低头，跟着呼吸慢慢做。'},
+    hipflex:{n:'弓步髋屈肌拉伸',st:'Z',v:'髋屈肌拉伸',s:2,t:30,rest:0,
+      cue:'单膝跪地成弓步，髋向前推，后腿大腿根有拉伸感。左右各做 1 组。'},
+    chestst:{n:'扶架胸部拉伸',st:'Z',v:'胸肌拉伸 扶墙',s:2,t:30,rest:0,
+      cue:'前臂贴住机架立柱，身体向反方向转开，胸前有拉伸感即可。左右各做 1 组。'},
+    fig4:{n:'仰卧 4 字拉伸',st:'Z',v:'仰卧4字拉伸 臀部',s:2,t:30,rest:0,
+      cue:'仰卧，一侧脚踝搭在另一侧膝盖上，抱住大腿拉向胸口。左右各做 1 组。'}
+  };
+
+  // Stick figures on a 120 x 96 canvas, floor at y = 88.
+  // Pose = [head x,y, shoulder, hip, elbow, wrist, knee, foot, (far elbow, far wrist, far knee, far foot), (spine bend)]
+  // a = start, b = end. st = static equipment path. dyn: ['c',ax,ay,j] cable to joint j, ['d',j] handle dot, ['t',j,dx,dy] plate.
+  var FIG = {
+    legpress:{a:[25,41,28,50,40,72,34,62,42,68,50,54,68,64],b:[25,41,28,50,40,72,34,62,42,68,60,65,80,63],st:'M20 44L34 80H48M44 83H104',dyn:[['t',12,2,9]]},
+    legext:{a:[41,27,40,36,44,60,42,49,50,58,64,60,66,80],b:[41,27,40,36,44,60,42,49,50,58,64,60,84,58],st:'M35 28V63H64M54 63V88M35 63V88',dyn:[['d',12]]},
+    legcurl:{a:[66,16,64,25,61,48,72,33,82,32,60,68,58,88,72,33,82,32,62,68,63,88],b:[66,16,64,25,61,48,72,33,82,32,60,68,44,60,72,33,82,32,62,68,63,88],st:'M86 18V88',dyn:[['d',12]]},
+    kickback:{a:[80,23,74,30,60,48,82,35,91,32,61,68,58,88,82,35,91,32,63,68,64,88],b:[80,23,74,30,60,48,82,35,91,32,49,65,34,76,82,35,91,32,63,68,64,88],st:'M94 14V88',dyn:[['c',94,84,12]]},
+    abduct:{a:[56,15,56,25,56,50,46,34,36,33,58,69,60,88,66,37,60,46,55,69,54,88],b:[56,15,56,25,56,50,46,34,36,33,67,66,78,81,66,37,60,46,55,69,54,88],st:'M32 14V88',dyn:[['c',32,84,12]]},
+    pullthrough:{a:[82,40,74,44,52,54,64,54,55,63,63,69,62,88],b:[64,15,63,24,62,48,62,37,60,49,62,68,62,88],st:'M12 20V88',dyn:[['c',12,84,8],['d',8]]},
+    bridge:{a:[27,83,36,84,60,84,48,86,59,87,74,70,84,88],b:[27,83,36,84,59,70,48,86,59,87,77,67,84,88],st:''},
+    split:{a:[61,17,60,26,58,50,55,38,59,47,70,68,72,88,55,38,59,47,50,69,34,68],b:[64,31,62,40,58,64,57,52,61,61,76,68,72,88,57,52,61,61,50,80,34,68],st:'M20 71H44M24 71V88M40 71V88'},
+    lunge:{a:[58,15,57,24,56,48,54,36,58,45,68,67,72,88,54,36,58,45,46,68,36,88],b:[58,29,57,38,56,62,54,50,58,59,74,68,72,88,54,50,58,59,48,80,30,84],st:''},
+    kneeraise:{a:[51,15,50,24,50,48,50,37,62,37,50,67,50,84],b:[51,15,50,24,50,48,50,37,62,37,68,46,70,64],st:'M40 6V88M44 18V50M46 40H66'},
+    deadbug:{a:[31,81,40,82,64,82,40,70,40,58,64,64,80,64,42,70,42,58,66,64,82,64],b:[31,81,40,82,64,82,30,74,19,72,80,76,98,78,42,70,42,58,66,64,82,64],st:''},
+    pulldown:{a:[51,29,52,38,52,62,60,27,60,14,70,62,70,82],b:[50,29,51,38,52,62,47,50,58,40,70,62,70,82],st:'M28 4H64M28 4V88M46 65H66M56 65V88',dyn:[['c',60,4,8],['d',8]]},
+    row:{a:[45,51,43,60,40,84,54,65,66,69,58,73,74,84],b:[39,51,39,60,40,84,34,72,46,74,58,73,74,84],st:'M102 30V88M77 76V88',dyn:[['c',102,80,8],['d',8]]},
+    revfly:{a:[60,20,60,30,60,58,56,40,58,48,50,63,48,84,64,40,62,48,70,63,72,84],b:[60,20,60,30,60,58,47,33,34,32,50,63,48,84,73,33,86,32,70,63,72,84],st:'M46 60H74',dyn:[['d',8],['d',16]]},
+    fly:{a:[60,20,60,30,60,58,46,37,41,25,50,63,48,84,74,37,79,25,70,63,72,84],b:[60,20,60,30,60,58,54,40,58,30,50,63,48,84,66,40,62,30,70,63,72,84],st:'M46 60H74',dyn:[['d',8],['d',16]]},
+    press:{a:[43,29,42,38,44,62,40,51,52,45,62,62,62,82],b:[43,29,42,38,44,62,55,41,68,42,62,62,62,82],st:'M36 26V64H62M52 64V88M36 64V88M36 10H52',dyn:[['c',50,10,8],['d',8]]},
+    strdown:{a:[57,18,54,27,48,50,66,25,78,22,51,69,50,88],b:[57,18,54,27,48,50,57,40,57,52,51,69,50,88],st:'M94 6V88M86 6H94',dyn:[['c',88,6,8],['d',8]]},
+    curl:{a:[49,15,48,24,48,48,49,37,52,49,48,68,48,88],b:[49,15,48,24,48,48,49,37,59,30,48,68,48,88],st:'M92 20V88',dyn:[['c',92,84,8],['d',8]]},
+    pushdown:{a:[53,16,50,25,48,49,52,38,62,30,49,69,48,88],b:[53,16,50,25,48,49,52,38,54,50,49,69,48,88],st:'M86 6V88M78 6H86',dyn:[['c',80,6,8],['d',8]]},
+    pullneg:{a:[54,10,56,19,57,43,61,30,60,16,60,59,53,72],b:[54,35,60,42,60,66,60,29,60,16,62,80,52,86],st:'M72 16V88M50 16H72',dyn:[['d',8]]},
+    hang:{a:[54,35,60,42,60,66,60,29,60,16,62,80,52,86],b:[54,35,60,42,61,66,60,29,60,16,65,80,56,87],st:'M72 16V88M50 16H72',dyn:[['d',8]]},
+    facepull:{a:[41,15,40,24,40,48,52,23,64,21,40,68,40,88],b:[41,15,40,24,40,48,37,19,48,17,40,68,40,88],st:'M96 6V88',dyn:[['c',96,14,8],['d',8]]},
+    lateral:{a:[60,16,60,26,60,52,63,39,64,51,64,70,66,88,52,38,57,48,56,70,54,88],b:[60,16,60,26,60,52,73,28,86,27,64,70,66,88,52,38,57,48,56,70,54,88],st:'M22 20V88',dyn:[['c',22,84,8],['d',8]]},
+    dip:{a:[58,12,57,21,56,45,58,34,58,46,58,62,50,74],b:[62,25,60,34,56,58,48,38,58,46,58,74,50,84],st:'M48 48H70M70 48V88'},
+    benchdip:{a:[49,29,48,38,53,60,47,50,46,62,71,68,72,88],b:[50,41,49,50,54,74,38,54,46,62,71,68,72,88],st:'M20 64H46M24 64V88M42 64V88'},
+    kcrunch:{a:[60,37,56,45,50,68,66,45,63,35,56,88,38,86],b:[71,57,64,58,50,68,71,67,73,57,56,88,38,86],st:'M92 6V88M84 6H92',dyn:[['c',86,6,8],['d',8]]},
+    crunch:{a:[36,72,44,70,66,60,38,61,36,68,82,48,93,58,38,61,36,68,82,48,93,58,55,65],b:[40,55,46,61,66,60,43,46,40,51,82,48,93,58,43,46,40,51,82,48,93,58,57,68],st:'M28 80L96 54M36 77V88M90 56V88',dyn:[['d',12]]},
+    plank:{a:[87,66,78,70,54,75,78,86,90,86,38,81,22,86],b:[87,66,78,70,54,74,78,86,90,86,38,80,22,86],st:''},
+    twist:{a:[33,54,38,62,52,82,47,66,58,66,68,68,84,84],b:[33,54,38,62,52,82,42,74,50,79,68,68,84,84],st:''},
+    incline:{a:[64,12,62,21,58,44,68,32,76,36,69,58,73,75,56,32,52,42,55,63,46,81],b:[64,12,62,21,58,44,56,32,52,42,55,63,46,81,68,32,76,36,69,58,73,75],st:'M22 86L98 70V88M96 70V40M88 40H98'},
+    walk:{a:[62,15,60,24,58,48,66,35,73,41,66,67,72,88,54,36,50,46,54,68,44,86],b:[62,15,60,24,58,48,54,36,50,46,54,68,44,86,66,35,73,41,66,67,72,88],st:''},
+    catcow:{a:[90,54,78,64,46,66,79,76,80,88,46,88,26,88,79,76,80,88,46,88,26,88,62,76],b:[88,72,78,62,46,66,79,75,80,88,46,88,26,88,79,75,80,88,46,88,26,88,62,48],st:''},
+    hipflex:{a:[57,37,56,46,54,70,60,57,70,66,74,68,76,88,60,57,70,66,44,88,26,86],b:[64,41,62,50,60,74,66,60,73,67,76,68,77,88,66,60,73,67,44,88,26,86],st:''},
+    chestst:{a:[57,15,56,24,56,48,45,25,41,14,56,68,56,88,57,37,59,49,56,68,56,88],b:[63,15,61,24,58,48,49,25,41,14,57,68,56,88,62,37,64,49,57,68,56,88],st:'M39 6V88'},
+    fig4:{a:[27,83,36,84,60,84,50,78,64,72,70,65,88,66,50,78,64,72,80,72,70,62],b:[27,83,36,84,60,84,48,76,60,68,63,62,81,58,48,76,60,68,73,70,63,58],st:''}
+  };
+
+  // Where the effort sits on the figure: [joint, joint, fraction along the segment]. 2 shoulder, 4 hip, 6 elbow, 10 knee, 12 foot, 14/18 far side.
+  var FO = {
+    legpress:[[4,4,0],[4,10,0.5]], legext:[[4,10,0.55]], legcurl:[[4,10,0.6]], kickback:[[4,4,0]], abduct:[[4,10,0.12]],
+    pullthrough:[[4,4,0],[4,10,0.5]], bridge:[[4,4,0]], split:[[4,4,0],[4,10,0.5]], lunge:[[4,4,0],[4,10,0.5]],
+    kneeraise:[[2,4,0.8]], deadbug:[[2,4,0.7]], pulldown:[[2,4,0.35]], row:[[2,4,0.3]], revfly:[[2,6,0.15],[2,14,0.15]],
+    fly:[[2,4,0.2]], press:[[2,4,0.2]], strdown:[[2,4,0.35]], curl:[[2,6,0.55]], pushdown:[[2,6,0.55]], pullneg:[[2,4,0.3]],
+    hang:[[2,4,0.15]], facepull:[[2,4,0.08]], lateral:[[2,6,0.2]], dip:[[2,6,0.5],[2,4,0.2]], benchdip:[[2,6,0.5]],
+    kcrunch:[[2,4,0.65]], crunch:[[2,4,0.6]], plank:[[2,4,0.6]], twist:[[2,4,0.65]], incline:[[4,4,0],[10,12,0.5]],
+    hipflex:[[4,18,0.25]], chestst:[[2,4,0.15]], fig4:[[4,4,0]]
+  };
+
+  // Detailed coaching per exercise. m 主要练, f 发力点, s 步骤, br 呼吸（缺省：发力呼气、还原吸气）, e 易错
+  var DT = {
+    legpress:{m:'臀部、大腿前侧',
+      f:'脚跟和脚掌中部一起踩踏板，想着用屁股和大腿把踏板推远，不是用脚尖顶。蹬到一半时臀部和大腿前侧一起发紧。',
+      s:['坐稳，背和臀部贴紧靠垫，双脚踩在踏板偏上的位置、与肩同宽，脚尖微微外开。','吸气，用 2 秒屈膝让踏板靠近，膝盖对着脚尖方向，屈到大约 90 度。','呼气，脚跟发力蹬出去，蹬到腿快伸直就停，膝盖留一点弯。'],
+      e:'膝盖往里夹；屁股离开座垫；蹬直后把膝盖锁死。'},
+    legpressw:{m:'臀部、大腿内侧',
+      f:'脚跟外侧踩实，蹬的时候想着把踏板向两边撕开。大腿内侧和臀部下缘发紧。',
+      s:['坐稳背贴靠垫，双脚比肩宽、脚尖外开约 30 度，踩在踏板偏上的位置。','吸气，用 2 秒屈膝下放，膝盖顺着脚尖方向向外打开。','呼气，脚跟发力蹬出去，蹬到腿快伸直就停。'],
+      e:'膝盖向里倒；脚尖和膝盖方向不一致；屁股离开座垫。'},
+    legext:{m:'大腿前侧（股四头肌）',
+      f:'只让膝盖这一个关节动。抬腿时想着把膝盖上方那块肌肉绷紧，顶端大腿前侧明显发硬。',
+      s:['坐稳背贴靠垫，膝盖窝贴近座椅边缘，脚背勾住下滚轴，双手扶住座椅两侧。','呼气，小腿向前上方抬到腿伸直，脚尖勾向自己，停 1 秒。','吸气，用 2–3 秒慢慢放回，配重片不要砸下去。'],
+      e:'用甩的借力；屁股抬离座椅；放下太快。'},
+    legcurl:{m:'大腿后侧（腘绳肌）',
+      f:'脚跟去找屁股，大腿保持垂直不要往前抬。大腿后侧正中有明显的收缩感。',
+      s:['面向座椅站立，双手扶稳，支撑腿微屈，另一只脚的脚跟后侧勾住下滚轴。','呼气，弯膝把脚跟勾向臀部，勾到小腿水平或更高，停 1 秒。','吸气慢慢放下，做完一侧再换腿。'],
+      e:'塌腰或身体前后晃；大腿跟着往前抬。'},
+    kickback:{m:'臀部（臀大肌）',
+      f:'用屁股把整条腿向后送，膝盖基本不弯。踢到最高点时同侧臀部夹紧发硬，腰不该有感觉。',
+      s:['脚踝绑带挂上低位滑轮，面向机器站，双手扶机架，上身前倾约 30 度，支撑腿微屈。','呼气，收紧小腹，工作腿向后上方踢，踢到臀部夹紧为止，停 1 秒。','吸气慢慢收回，脚不落地接着做下一次。'],
+      e:'踢太高导致塌腰；身体跟着转；用甩的。'},
+    abduct:{m:'臀部外侧（臀中肌）',
+      f:'用胯骨外侧把腿推开，脚尖朝前不要外翻。发酸的位置在屁股侧上方，不是大腿外侧或腰。',
+      s:['侧身对着机器站，远离机器的那只脚绑绑带，内侧手扶机架，站直收腹。','呼气，工作腿向外侧打开 30–40 度，上身保持不动，停 1 秒。','吸气慢慢收回到双脚并拢，做完换边。'],
+      e:'身体往反方向歪；脚尖外翻，变成用大腿前侧抬。'},
+    pullthrough:{m:'臀部、大腿后侧',
+      f:'这是屁股向后坐、再向前顶的动作，手臂只是挂着绳子。站直的一瞬间夹紧臀部，下放时大腿后侧有被拉长的感觉。',
+      s:['背对机器跨站在绳索上，双手从两腿之间握住绳子，向前走一两步让配重离开底座。','吸气，膝盖微屈，屁股向后推，背打直，上身前倾到接近水平。','呼气，脚跟踩地，屁股向前顶回站直，顶端夹臀 1 秒，不要后仰。'],
+      e:'弓背；膝盖弯太多变成深蹲；用手臂去拉绳子。'},
+    bridge:{m:'臀部',
+      f:'脚跟踩地，用屁股把骨盆顶起来。最高点臀部夹紧，腰和大腿后侧不应该比屁股更酸。',
+      s:['仰卧屈膝，双脚与髋同宽，脚跟离屁股一个手掌的距离，手放身体两侧。','呼气，收紧小腹，脚跟发力把臀部顶起到肩、髋、膝成一条直线，夹紧 2 秒。','吸气慢慢放下，屁股轻触地面就接着顶下一次。'],
+      e:'顶太高变成塌腰；脚离屁股太远，会变成大腿后侧酸；膝盖向里倒。'},
+    split:{m:'臀部、大腿前侧',
+      f:'重心压在前脚脚跟，后腿只是支撑。站起时用前腿的臀部和大腿把身体推上来，前腿那侧屁股有被拉开再收紧的感觉。',
+      s:['背对哑铃凳站一大步远，后脚脚背搭在凳面上，上身略前倾，双手叉腰或自然下垂。','吸气，垂直下蹲到前腿大腿接近水平，前膝对着脚尖方向。','呼气，前脚脚跟蹬地站起，做完一侧再换腿。'],
+      e:'前脚离凳子太近，膝盖超出脚尖很多；重心压到后腿；膝盖向里倒。'},
+    lunge:{m:'臀部、大腿前侧',
+      f:'两条腿一起弯，重心在前脚脚跟。站起时主要是前腿的臀部和大腿发力。',
+      s:['前后脚站开一大步，两脚左右留一拳宽保持平衡，上身挺直，手可以扶机架。','吸气，垂直下蹲，后膝落向地面但不碰地，前膝对着脚尖。','呼气，前脚跟蹬地站起，做完一侧再换腿。'],
+      e:'步子太小；身体往前冲；前膝向里倒。'},
+    kneeraise:{m:'下腹部、髋屈肌',
+      f:'先收小腹把骨盆向上卷，再带着膝盖抬起来，不是光抬腿。小腹下半段发紧。',
+      s:['背贴靠垫，前臂压在扶手垫上，握住把手，肩膀下沉不要耸，双腿自然下垂。','呼气，收腹卷骨盆，把膝盖提到髋部高度或更高，停 1 秒。','吸气，用 2 秒慢慢放下，腿不要晃。'],
+      e:'靠摆动借力；耸肩；放下时腰往前塌。'},
+    deadbug:{m:'深层核心（腹横肌）',
+      f:'全程用小腹把下背压在地上。手脚伸得越远，肚子越要收紧，感觉在腹部深处，不是腰。',
+      s:['仰卧，双臂伸直指向天花板，大腿垂直地面、小腿水平。','呼气，右手向头顶方向、左腿向前同时慢慢伸直放低，离地一拳高停住。','吸气收回，换左手右腿。'],
+      e:'下背离开地面拱起来；动作太快；憋气。'},
+    pulldown:{m:'后背（背阔肌）',
+      f:'先沉肩，再用手肘往下、往身体两侧的口袋里拉，手只是钩子。腋下后方那一大片发紧，前臂和手臂前侧不该先酸。',
+      s:['坐稳，大腿卡在挡垫下，双手正握横杆，握距比肩略宽，手臂伸直、上身微微后倾。','呼气，肩膀先下沉，手肘向下向后拉，把横杆拉到锁骨前方，挺胸停 1 秒。','吸气，用 2–3 秒让横杆回到头顶，手臂伸直但肩膀不要被拉到耸起。'],
+      e:'身体大幅后仰借力；耸肩；拉到脖子后面。'},
+    row:{m:'中背部（菱形肌、背阔肌）',
+      f:'手肘贴着身体向后划，最后把两块肩胛骨向中间夹。发力感在后背中间，不是手臂。',
+      s:['坐在地上面向机器，双脚抵住底座、膝盖微屈，握住把手，背挺直。','呼气，手肘贴着肋骨向后拉，把手拉到肚脐，肩胛骨夹紧 1 秒。','吸气，手臂慢慢前送，让肩胛骨打开，但背不要弓。'],
+      e:'身体前后大幅晃动；耸肩；弓背。'},
+    revfly:{m:'肩膀后侧、上背',
+      f:'用手肘向两侧后方画弧带动，想着把两块肩胛骨往中间挤。发酸的位置在肩膀后面和上背。',
+      s:['面朝靠垫坐，胸口贴住靠垫，把蝴蝶臂调到身体前方，握住把手，手肘微屈。','呼气，手臂向两侧后方打开到和身体成一条线，停 1 秒。','吸气慢慢回到身前，配重片不落到底。'],
+      e:'重量太大变成耸肩；手肘越做越弯；身体后仰离开靠垫。'},
+    strdown:{m:'后背（背阔肌）',
+      f:'手臂保持几乎伸直，像用整条手臂往下划水。发力在腋下后方，手臂后侧只是辅助。',
+      s:['面向高位滑轮站，退后半步，双手正握横杆，上身微前倾，手臂伸直举到眼睛高度。','呼气，肩膀下沉，手臂画弧把横杆压到大腿前，背部夹紧 1 秒。','吸气慢慢放回到眼睛高度。'],
+      e:'手肘弯曲变成三头下压；耸肩；身体前后晃。'},
+    curl:{m:'手臂前侧（肱二头肌）',
+      f:'大臂像钉在身体两侧，只有前臂动。弯到顶时大臂前侧鼓起发紧。',
+      s:['面向机器站，握住低位滑轮的把手，掌心朝上，手臂自然伸直，大臂贴住身体。','呼气，弯手肘把把手举到胸前，顶端挤 1 秒。','吸气，用 2–3 秒慢慢放下到手臂伸直。'],
+      e:'手肘往前跑；身体后仰借力；放下太快。'},
+    pushdown:{m:'手臂后侧（肱三头肌）',
+      f:'手肘固定在身体两侧，只伸直小臂。压到底时大臂后侧发硬，就是常说的拜拜肉的位置。',
+      s:['面向高位滑轮站，双手握住三头绳，大臂夹紧身体，小臂抬到水平略高。','呼气，把绳子向下压到手臂伸直，同时向两侧分开，停 1 秒。','吸气，慢慢放回到小臂水平，手肘不要跟着抬。'],
+      e:'手肘前后移动；用身体往下压；耸肩。'},
+    pullneg:{m:'后背、手臂前侧',
+      f:'下放时想着后背在刹车，肩膀始终往下沉。整个下降过程后背和手臂都在绷着对抗。',
+      s:['踩凳子或跳起，让下巴越过把手，握距比肩略宽，身体收紧。','双脚离开凳子，用 3–5 秒匀速把身体放下去，全程控制速度。','放到手臂伸直后踩回凳子，重新回到顶端再做下一次。'],
+      br:'下放时慢慢呼气', e:'一下子掉下去；耸肩；身体乱晃。'},
+    hangb:{m:'握力、肩背',
+      f:'手握紧，肩膀主动往下沉一点点，不要完全挂在关节上。前臂和腋下后方会有感觉。',
+      s:['双手正握引体把手，握距与肩同宽或略宽。','双脚离地自然悬挂，肩膀微微下沉，收紧小腹不要晃。','保持到规定时间，踩凳子下来，不要直接跳。'],
+      br:'自然呼吸，不要憋气', e:'完全松垮地挂着；耸肩到耳朵。'},
+    press:{m:'胸部，肩前侧和手臂后侧辅助',
+      f:'肩膀下沉、挺胸，想着用胸口把把手推出去，而不是用手推。推到前面时两侧胸肌向中间挤紧。',
+      s:['调好蝴蝶臂档位让把手在胸部中段高度，背和肩胛骨贴紧靠垫，握住把手，手肘略低于肩。','呼气，向前推到手臂快伸直，胸口夹紧 1 秒，手肘不要锁死。','吸气，用 2 秒慢慢收回，把手回到胸前有拉伸感的位置。'],
+      e:'耸肩；肩膀向前探离开靠垫；手肘抬到比肩高。'},
+    fly:{m:'胸部',
+      f:'手肘角度固定不变，用大臂内侧向中间合拢，像抱住一棵大树。发力点在胸口中间，两侧胸肌互相靠近。',
+      s:['坐稳背贴靠垫，把蝴蝶臂调到两侧打开的位置，握住把手，手肘微屈。','呼气，双臂向身体正前方合拢，合到最里面夹紧 1 秒。','吸气，慢慢打开到胸部有拉伸感，不要超过肩膀后面太多。'],
+      e:'手肘越做越弯变成推；耸肩；打开过大拉到肩膀。'},
+    facepull:{m:'肩膀后侧、上背',
+      f:'手肘抬高向两侧拉开，拉到最后把手向后翻，像举起双手的投降姿势。肩膀后面和两块肩胛骨之间发紧。',
+      s:['三头绳挂在高位滑轮，双手握绳，拇指朝向自己，后退一步，手臂伸直。','呼气，手肘抬到和肩同高，把绳子中心拉向眉心，两手向耳朵两侧分开，停 1 秒。','吸气，慢慢伸直手臂还原。'],
+      e:'手肘掉到肩膀以下；身体后仰；重量太大。'},
+    lateral:{m:'肩膀外侧（三角肌中束）',
+      f:'用手肘带着手臂往外抬，手只是跟着走。肩膀最外侧发酸才对，脖子两边酸就是耸肩了。',
+      s:['侧身对着机器站，用远离机器的手握住低位滑轮把手，绳索从身前经过，手肘微屈。','呼气，手臂向侧面抬到与肩同高，停 1 秒。','吸气，用 2 秒慢慢放回，做完一侧再换边。'],
+      e:'耸肩；身体歪向一边借力；抬得超过肩膀。'},
+    dip:{m:'胸部下侧、手臂后侧',
+      f:'下放时胸和大臂后侧在刹车，肩膀始终压低、远离耳朵。',
+      s:['握住双杠跳起，手臂撑直，肩膀下沉，双腿屈膝。','上身略前倾，用 3 秒屈肘慢慢下放，到大臂接近水平为止。','脚踩地，跳回撑直的位置再做下一次。'],
+      br:'下放时慢慢呼气', e:'耸肩；下放太深拉到肩膀；一下子掉下去。'},
+    benchdip:{m:'手臂后侧（肱三头肌）',
+      f:'手肘朝正后方弯，撑起时用大臂后侧把身体推上来，屁股贴着凳子上下。',
+      s:['背对哑铃凳，双手撑在凳沿、指尖朝前，屁股移到凳子外，双腿屈膝踩地。','吸气，屈肘让身体垂直下放，到大臂接近水平。','呼气，手掌推凳子撑起到手臂伸直。'],
+      e:'手肘向两侧外翻；屁股离凳子太远；耸肩。'},
+    kcrunch:{m:'腹部（腹直肌）',
+      f:'手和绳子固定在耳边不动，用肚子把胸口卷向骨盆，把上半身卷成一个 C。整个腹部前侧发紧，手臂不发力。',
+      s:['面向高位滑轮跪下，双手握绳拉到耳朵两侧，臀部抬起不要坐在脚跟上。','呼气，收腹把胸口卷向膝盖方向，背部拱圆，停 1 秒。','吸气，慢慢回到上身挺直，腹部保持一点紧张。'],
+      e:'屁股往后坐，变成用体重压；用手臂拉绳子；腰背挺直着弯腰。'},
+    crunch:{m:'腹部（腹直肌）',
+      f:'想着把肋骨向骨盆靠拢，而不是把上身坐起来。腹部上半段发紧，脖子和大腿根不该比肚子更累。',
+      s:['躺在仰卧板上，脚勾住滚轴，双手轻放耳侧，下巴和胸口之间留一个拳头的距离。','呼气，收腹把肩胛骨卷离板面，下背留在板上，停 1 秒。','吸气，慢慢躺回，肩膀轻触板面就接着做。'],
+      e:'双手抱头拽脖子；整个上身坐起来，会变成大腿根发力；借惯性弹起。'},
+    plank:{m:'整个核心',
+      f:'想着把手肘和脚尖互相拉近、把肚脐收向脊柱，同时夹紧臀部。腹部有被勒紧的感觉，腰不该酸。',
+      s:['俯卧，手肘撑在肩膀正下方，前臂平行，脚尖踩地。','收腹夹臀把身体撑起，头、背、臀、脚跟成一条直线，眼睛看地面。','保持到规定时间，腰开始下塌就提前结束。'],
+      br:'自然呼吸，不要憋气', e:'塌腰；屁股撅太高；憋气。'},
+    twist:{m:'腹部两侧（腹斜肌）',
+      f:'转的是胸口和肩膀，不是只甩手。每次转到一侧，腰腹两侧收紧。',
+      s:['坐在垫上屈膝，脚跟点地，上身后倾约 45 度，背挺直，双手合十在胸前。','呼气，肩膀带着手转向一侧，手落到髋部旁边。','吸气回正，再呼气转向另一侧。'],
+      e:'弓背；只动手臂；速度太快。'},
+    incwarm:{m:'全身预热',
+      f:'脚跟先落地，滚到前脚掌蹬出去，手臂自然摆。',
+      s:['站上跑步机，夹好安全夹，先以慢速启动。','把坡度调到 2–3%，速度 4–4.5 km/h（约 2.5–2.8 mph），抬头挺胸自然摆臂。','走满 3 分钟，身体微微发热即可。'],
+      br:'自然呼吸', e:'一上来就开大坡度；低头看脚。'},
+    incmain:{m:'臀部、大腿后侧、小腿，同时练心肺',
+      f:'每一步用后腿的屁股把身体往上、往前推，像在上楼梯。步子不用大，臀部和小腿会慢慢发热发酸。',
+      s:[['把坡度调到 6–8%，速度 4.5 km/h（约 2.8 mph）。','把坡度调到 10–12%，速度 4.8–5 km/h（约 3 mph）。'],'身体从脚踝处略微前倾，收紧小腹，全脚掌落地，后腿蹬直时夹一下臀。','手臂自然摆动，不抓扶手。保持在能断续说话、但唱不了歌的强度，走到时间结束。'],
+      br:'鼻吸嘴呼，保持节奏', e:'抓着扶手往后仰，坡度就白开了；踮着脚尖走；步子迈太大。'},
+    inccool:{m:'放松恢复',
+      f:'不用发力，放慢步子，让呼吸和心率降下来。',
+      s:['把坡度降到 0–2%，速度降到 3.5–4 km/h（约 2.2–2.5 mph）。','放松肩膀，深呼吸，慢走 3 分钟。','等跑带完全停下再下机。'],
+      br:'慢而深的呼吸', e:'直接按停就下机，容易头晕。'},
+    incfin:{m:'臀部、大腿后侧、小腿，同时练心肺',
+      f:'每一步用后腿的屁股把身体往上、往前推，像在上楼梯。步子不用大，臀部和小腿会慢慢发热发酸。',
+      s:[['循环全部做完后上跑步机，坡度 5–6%，速度 4.5 km/h（约 2.8 mph）。','循环全部做完后上跑步机，坡度 8–10%，速度 5 km/h（约 3 mph）。'],'身体略微前倾，收紧小腹，全脚掌落地，手臂自然摆动，不抓扶手。','最后 2 分钟把坡度降到 0–2%，慢走收尾。'],
+      br:'鼻吸嘴呼，保持节奏', e:'抓着扶手往后仰；踮着脚尖走；直接按停下机。'},
+    walk:{m:'恢复，促进血液循环',
+      f:'轻松走，不追求强度。',
+      s:['出门散步，或在跑步机上不开坡度、以 4–5 km/h（约 2.5–3 mph）慢走。','保持能轻松聊天的强度，走 20–30 分钟。','走完喝点水，再做下面的拉伸。'],
+      br:'自然呼吸', e:'把休息日走成训练日。'},
+    hang:{m:'放松肩背和脊柱',
+      f:'不用发力，握住后让身体的重量把肩和背慢慢拉开。',
+      s:['握住引体把手，握距与肩同宽。','慢慢把体重交给双手，脚尖可以点地分担一部分。','保持到时间结束，踩稳后再松手。'],
+      br:'慢而深的呼吸', e:'直接跳下来；耸肩憋气。'},
+    catcow:{m:'脊柱活动度',
+      f:'从尾骨开始一节一节地动，不是只动腰。',
+      s:['四点跪，手在肩正下方，膝在髋正下方。','吸气，塌腰、挺胸、抬头看前方。','呼气，拱背、收腹、低头看肚脐，两个方向慢慢交替。'],
+      br:'一吸一呼各做一个方向', e:'动作太快；手臂弯曲。'},
+    hipflex:{m:'拉伸大腿根前侧（髋屈肌）',
+      f:'不用发力。夹紧后腿那一侧的屁股，再把髋向前推，后腿大腿根前面有拉伸感。',
+      s:['单膝跪地成弓步，前腿膝盖在脚踝正上方，后腿膝盖下垫个垫子。','上身挺直，夹紧后腿一侧的臀部，把髋慢慢向前推。','保持 30 秒，换另一侧。'],
+      br:'均匀呼吸，呼气时再放松一点', e:'塌腰；前膝超过脚尖太多。'},
+    chestst:{m:'拉伸胸部和肩前侧',
+      f:'不用发力。身体转开时，胸口外侧到肩膀前面有拉伸感。',
+      s:['侧身站在机架立柱旁，手肘抬到与肩同高，前臂贴住立柱。','同侧脚向前迈半步，身体慢慢向反方向转开。','保持 30 秒，换另一侧。'],
+      br:'均匀呼吸，呼气时再放松一点', e:'耸肩；用力过猛拉到肩膀疼。'},
+    fig4:{m:'拉伸臀部深层（梨状肌）',
+      f:'不用发力。搭着脚踝那一侧的屁股深处有拉伸感。',
+      s:['仰卧屈膝，把右脚踝搭在左膝上，摆成数字 4。','双手抱住左大腿后侧，把腿拉向胸口，右膝轻轻向外推。','保持 30 秒，换另一侧。'],
+      br:'均匀呼吸，呼气时再放松一点', e:'头和肩离地去够腿；憋气。'}
+  };
+
+  // MUSCLE-BEGIN
+  // Flat front / back anatomy. Each body is drawn as one half in a 100 x 240 box and mirrored about x = 50.
+  var SIL = 'M50.5 27L45.2 27L44.6 33Q38 36 28 39Q21.5 41 20.5 48Q17.5 64 15.8 80Q12 98 9.5 114Q6.5 122 6 130Q6.5 135 9.5 134.5Q13 131 14.8 118' +
+            'Q19 100 22.2 84Q25.5 70 28.6 58Q30.5 68 32.5 80Q34 88 33.2 94Q29 106 27.5 120Q27 146 31.2 170Q29.5 182 31 196Q33 212 35 226' +
+            'Q33 231 32.5 234.5L43 234.5Q42 229 41.5 226Q44.5 206 44 192Q42.5 180 43.2 170Q47 148 49.5 127L50.5 126Z';
+  var MS = {
+    f:[['trapu','M45 30.5Q40 34.5 31 37.6L45 36.2Z'],
+       ['dmid','M27 39.6Q21.6 41.5 20.9 48Q20 54 20.6 59Q23 55 24.2 49Q25 43.5 27 39.6Z'],
+       ['dfront','M27.8 39.5Q33 38.4 34.6 40.2Q31.6 46 29 52Q26.5 57 21.6 60.5Q24 55 25 49.5Q25.9 43.5 27.8 39.5Z'],
+       ['chU','M49.4 37.6L35.8 39.9Q32.6 43.5 30.6 47Q40 44.6 49.4 44.6Z'],
+       ['chL','M49.4 45.6Q40 45.6 30.2 48.2Q28.9 53 31.5 57.4Q37 61.4 44 60.4Q48 59.4 49.4 57Z'],
+       ['bi','M22 60.5Q26 60.5 26 66Q24.4 75 22.6 81Q20.6 82.3 19 80.3Q18.4 72 19.6 65.5Q20.4 61.5 22 60.5Z'],
+       ['fore','M16.8 84.5Q21 85 21 88.5Q18.4 100 14.4 113Q12.5 114.5 10.9 112.8Q13.2 100 14.8 90Q15.4 86 16.8 84.5Z'],
+       ['serr','M31.5 60L35.5 62.5L32.2 64.2ZM32 65.5L36.2 68L32.8 69.8ZM32.6 71L36.8 73.5L33.4 75.2Z'],
+       ['obl','M42 64.5L38.2 76.5L33.6 82Q34.8 88 34 94Q31.5 101 31 106L42 101Z'],
+       ['abs1','M43.2 62.2H49.2V69H43.2Z'],['abs2','M43.2 70.2H49.2V77.2H43.2Z'],['abs3','M43.2 78.4H49.2V86.4H43.2Z'],
+       ['abs4','M43.3 87.6H49.2V106Q45 103 43.3 96Z'],
+       ['hipf','M34.5 108.5L42.5 102.8L48.2 117.5Q44 121.5 39.5 120Q36 116 34.5 108.5Z'],
+       ['vl','M29.6 124Q33 122.5 34.6 126Q35.4 145 35.2 160Q34 165.5 32.2 164.5Q29.4 148 29.6 124Z'],
+       ['rf','M36.4 122Q40.5 120.5 42 124Q42.6 142 40.6 158Q39 162.5 37.2 160.5Q35.8 142 36.4 122Z'],
+       ['vm','M41.6 146Q44.6 147 44.6 154Q44 162.5 41.2 165.5Q38.8 164.5 39.6 160Q41.4 154 41.6 146Z'],
+       ['add','M43.6 124.5Q47.8 126.5 48.8 130Q47.2 140 45.2 146.5Q43.4 138 43.6 124.5Z'],
+       ['tib','M33.6 176Q36.5 175 37.2 180Q37 198 36.4 214Q35 216 34.4 213Q32.6 195 33.6 176Z'],
+       ['gasf','M41.2 178Q43.4 182 43.2 192Q42.8 202 40.6 208Q39.8 195 41.2 178Z']],
+    b:[['trapu','M49.4 27.5L45.4 27.5Q44.6 33 37 36.2L29 39L40 41.5L49.4 40Z'],
+       ['trapm','M49.4 41L40 42.5L30.5 40L37.5 50L49.4 78Z'],
+       ['dmid','M26.5 39.9Q21.6 41.6 20.9 48Q20.2 54 20.7 59.5Q22.6 54 23.6 48Q24.6 43 26.5 39.9Z'],
+       ['drear','M27.6 40.2Q25.5 44 24.6 48.5Q23.6 54.5 21.6 60.2Q26 57.5 30 50.5L36 44.2Q32 40.6 27.6 40.2Z'],
+       ['infra','M36.8 51.5L31.4 51.8Q29.8 55 30.6 58.6Q35.5 60.2 40.6 59.6Q40 55.5 36.8 51.5Z'],
+       ['lat','M30.4 60.5Q36 62.5 41.6 61.6L49.4 80L44.2 99Q37.5 92 34.4 83Q31.6 71 30.4 60.5Z'],
+       ['oblb','M34.6 87Q37 93 42.6 99.8L35.4 102.5Q34.2 96 34.6 87Z'],
+       ['erec','M49.4 82L45.2 99.5Q46.5 104 49.4 106Z'],
+       ['tri','M21.8 61Q26 60 26.2 66Q24.6 75 22.8 81Q20.6 82.6 18.8 80.6Q18 72 19.2 66Q20 62 21.8 61Z'],
+       ['fore','M16.8 84.5Q21 85 21 88.5Q18.4 100 14.4 113Q12.5 114.5 10.9 112.8Q13.2 100 14.8 90Q15.4 86 16.8 84.5Z'],
+       ['gmed','M33.4 104.5Q38 101 44.6 101.5Q43 107 38.5 110.5Q33 113 30 111.5Q30.6 107.5 33.4 104.5Z'],
+       ['gmax','M45.4 102.5Q48.4 105 49.4 108.5L49.4 126Q44 131 37 129.5Q30 127.5 28.6 121Q28.6 115 31 112.8Q37 112.5 41 109.5Q44 106.5 45.4 102.5Z'],
+       ['bf','M30.6 133Q34.5 133.6 36.8 132.6Q37.6 148 36.4 163Q35 167 33.4 166Q30 150 30.6 133Z'],
+       ['st','M38 132.6Q42.5 133 46 130.6Q46.2 148 43 164Q41.6 167 39.8 165.5Q38 148 38 132.6Z'],
+       ['gasL','M31.6 176Q34 173.5 36.6 175.5Q37.2 188 36.2 200Q34 204 32.6 201Q30.6 188 31.6 176Z'],
+       ['gasM','M37.8 175.5Q40.5 173.5 42.6 176.5Q43.4 190 42.2 203Q40 206.5 38.4 203.5Q37.4 190 37.8 175.5Z'],
+       ['sol','M33.6 205.5Q37 209 41.8 206.5Q41.4 216 39.6 221L36 221Q34.3 214 33.6 205.5Z']]
+  };
+  // label -> name, view it is labelled in, anchor on the left half, shapes it lights up
+  var LB = {
+    dfront:{n:'三角肌前束',v:'f',a:[30,45],sh:['f.dfront']},
+    dmid:{n:'三角肌中束',v:'f',a:[22.3,48],sh:['f.dmid','b.dmid']},
+    chest:{n:'胸大肌',v:'f',a:[39,51],sh:['f.chU','f.chL']},
+    chestlow:{n:'胸大肌下部',v:'f',a:[39,54],sh:['f.chL']},
+    bi:{n:'肱二头肌',v:'f',a:[22.5,70],sh:['f.bi']},
+    fore:{n:'前臂肌群',v:'f',a:[16,98],sh:['f.fore','b.fore']},
+    serr:{n:'前锯肌',v:'f',a:[33.8,67.6],sh:['f.serr']},
+    abs:{n:'腹直肌',v:'f',a:[46.2,74],sh:['f.abs1','f.abs2','f.abs3','f.abs4']},
+    lowabs:{n:'腹直肌下段',v:'f',a:[46.3,92],sh:['f.abs3','f.abs4']},
+    obl:{n:'腹外斜肌',v:'f',a:[38,86],sh:['f.obl','b.oblb']},
+    tva:{n:'腹横肌(深层)',v:'f',a:[36.5,97],sh:['f.obl']},
+    hipf:{n:'髂腰肌',v:'f',a:[41.5,112],sh:['f.hipf']},
+    quad:{n:'股四头肌',v:'f',a:[39,140],sh:['f.vl','f.rf','f.vm']},
+    add:{n:'内收肌',v:'f',a:[45.8,133],sh:['f.add']},
+    tib:{n:'胫骨前肌',v:'f',a:[35.4,195],sh:['f.tib']},
+    trapu:{n:'斜方肌上束',v:'b',a:[39,36.5],sh:['b.trapu','f.trapu']},
+    trapm:{n:'斜方肌中下束',v:'b',a:[44.5,58],sh:['b.trapm']},
+    rhom:{n:'菱形肌(深层)',v:'b',a:[45.5,47],sh:['b.trapm']},
+    drear:{n:'三角肌后束',v:'b',a:[27,48],sh:['b.drear']},
+    cuff:{n:'冈下肌',v:'b',a:[35.5,56],sh:['b.infra']},
+    lat:{n:'背阔肌',v:'b',a:[38,77],sh:['b.lat']},
+    tri:{n:'肱三头肌',v:'b',a:[22.3,70],sh:['b.tri']},
+    lowb:{n:'竖脊肌',v:'b',a:[47.8,96],sh:['b.erec']},
+    gmed:{n:'臀中肌',v:'b',a:[37,106.5],sh:['b.gmed']},
+    glute:{n:'臀大肌',v:'b',a:[39,120],sh:['b.gmax']},
+    ham:{n:'腘绳肌',v:'b',a:[40.5,148],sh:['b.bf','b.st']},
+    calf:{n:'腓肠肌',v:'b',a:[40.3,188],sh:['b.gasL','b.gasM','f.gasf']},
+    sol:{n:'比目鱼肌',v:'b',a:[37.5,213],sh:['b.sol']}
+  };
+  // exercise -> [主要, 辅助]
+  var MU = {
+    legpress:[['quad','glute'],['ham','calf']], legpressw:[['quad','glute','add'],['ham']], legext:[['quad'],[]],
+    legcurl:[['ham'],['calf']], kickback:[['glute'],['ham','lowb']], abduct:[['gmed'],['glute']],
+    pullthrough:[['glute','ham'],['lowb']], bridge:[['glute'],['ham','abs']], split:[['quad','glute'],['ham','add','gmed']],
+    lunge:[['quad','glute'],['ham','add','gmed']], kneeraise:[['lowabs','hipf'],['obl']], deadbug:[['tva','abs'],['hipf']],
+    pulldown:[['lat'],['trapm','rhom','drear','bi']], row:[['trapm','rhom','lat'],['drear','bi']], revfly:[['drear','trapm','rhom'],['cuff']],
+    strdown:[['lat'],['tri','abs','serr']], curl:[['bi'],['fore']], pushdown:[['tri'],[]], pullneg:[['lat','bi'],['trapm','fore']],
+    hangb:[['fore','lat'],['trapm']], press:[['chest'],['dfront','tri']], fly:[['chest'],['dfront']],
+    facepull:[['drear','trapm','cuff'],['rhom']], lateral:[['dmid'],['trapu']], dip:[['chestlow','tri'],['dfront']],
+    benchdip:[['tri'],['dfront','chestlow']], kcrunch:[['abs'],['obl']], crunch:[['abs'],['obl']],
+    plank:[['abs','tva'],['lowb','glute','dfront','serr']], twist:[['obl'],['abs','hipf']],
+    incwarm:[[],['glute','quad','ham','calf']], incmain:[['glute','ham','calf'],['quad','sol']], incfin:[['glute','ham','calf'],['quad','sol']],
+    inccool:[[],['glute','calf']], walk:[[],['quad','glute','calf']],
+    hang:[['lat'],['trapm','fore']], catcow:[['lowb','abs'],['trapm']], hipflex:[['hipf'],['quad']],
+    chestst:[['chest'],['dfront']], fig4:[['glute','gmed'],[]]
+  };
+  var STRETCH = {hang:1, catcow:1, hipflex:1, chestst:1, fig4:1};
+  var MOX = {f:84, b:190};
+  function muscleInner(dk){
+    var mu = MU[dk]; if(!mu) return '';
+    var cls = {}, shc = {};
+    mu[0].forEach(function(k){ cls[k] = 'p'; LB[k].sh.forEach(function(id){ shc[id] = 'p'; }); });
+    mu[1].forEach(function(k){ if(!cls[k]) cls[k] = 's'; LB[k].sh.forEach(function(id){ if(!shc[id]) shc[id] = 's'; }); });
+    function body(view){
+      var half = '<path class="bd" d="' + SIL + '"/>' + MS[view].map(function(m){
+        var c = shc[view + '.' + m[0]];
+        return '<path class="mu' + (c ? ' ' + c : '') + '" d="' + m[1] + '"/>';
+      }).join('');
+      return '<g transform="translate(' + MOX[view] + ' 0)"><ellipse class="bd" cx="50" cy="16" rx="9.5" ry="11.5"/>' +
+             '<g>' + half + '</g><g transform="translate(100 0) scale(-1 1)">' + half + '</g></g>';
+    }
+    function labels(view){
+      var left = view === 'f', gap = 13.5, floor = 14, out = '', i = 0, j, k;
+      var arr = Object.keys(cls).filter(function(q){ return LB[q].v === view; }).map(function(q){
+        var a = LB[q].a;
+        return {n:LB[q].n, c:cls[q], x:MOX[view] + (left ? a[0] : 100 - a[0]), y:a[1], t:a[1] + 4};
+      }).sort(function(p, q){ return (p.y - q.y) || (left ? p.x - q.x : q.x - p.x); });
+      while(i < arr.length){
+        j = i; arr[i].ly = Math.max(arr[i].t, floor);
+        while(j + 1 < arr.length && arr[j+1].t < arr[j].ly + gap){ arr[j+1].ly = arr[j].ly + gap; j++; }
+        var sum = 0; for(k = i; k <= j; k++) sum += arr[k].ly - arr[k].t;
+        var sh = Math.max(0, Math.min(sum / (j - i + 1), arr[i].ly - floor));
+        for(k = i; k <= j; k++) arr[k].ly -= sh;
+        floor = arr[j].ly + gap; i = j + 1;
+      }
+      arr.forEach(function(q){
+        var ly = Math.round(q.ly * 10) / 10;
+        out += '<path class="ld" d="M' + (left ? 80 : 294) + ' ' + (ly - 4) + 'L' + q.x + ' ' + q.y + '"/>' +
+               '<circle class="dot" cx="' + q.x + '" cy="' + q.y + '" r="1.5"/>' +
+               '<text class="' + q.c + '" x="' + (left ? 78 : 296) + '" y="' + ly + '" text-anchor="' + (left ? 'end' : 'start') + '">' + q.n + '</text>';
+      });
+      return out;
+    }
+    return body('f') + body('b') + labels('f') + labels('b') +
+           '<text class="cap" x="134" y="247" text-anchor="middle">正面</text><text class="cap" x="240" y="247" text-anchor="middle">背面</text>';
+  }
+  function muscleBlock(dk){
+    var mu = MU[dk]; if(!mu) return '';
+    var names = function(a){ return a.map(function(k){ return LB[k].n; }).join('、'); };
+    var word = STRETCH[dk] ? '主要拉伸' : '主要发力';
+    return '<div class="mus"><svg class="mm" viewBox="0 0 374 252" role="img" aria-label="肌肉图。' +
+      (mu[0].length ? word + '：' + names(mu[0]) + '。' : '') + (mu[1].length ? '辅助：' + names(mu[1]) + '。' : '') + '">' + muscleInner(dk) + '</svg>' +
+      '<p class="mus-lg">' + (mu[0].length ? '<span><i class="sw"></i>' + word + '</span>' : '') + (mu[1].length ? '<span><i class="sw s"></i>' + (mu[0].length ? '辅助' : '轻度参与') + '</span>' : '') + '</p></div>';
+  }
+  // MUSCLE-END
+
+  var W_LOW = ['跑步机慢走 3 分钟，坡度 0–2%','髋绕环、膝绕环各 10 圈','徒手深蹲 10 次','第一个动作先用最轻的重量做 15 次'];
+  var W_UP  = ['跑步机慢走 3 分钟，坡度 0–2%','肩绕环向前、向后各 10 圈','扶墙俯卧撑 10 次','第一个动作先用最轻的重量做 15 次'];
+  var W_INC = ['髋绕环、踝关节绕环各 10 圈','小腿拉伸，每侧 20 秒'];
+  var W_ALL = ['跑步机慢走 3 分钟，坡度 0–2%','肩绕环、髋绕环各 10 圈','徒手深蹲 10 次'];
+  var C_LOW = ['大腿前侧拉伸，每侧 30 秒','坐姿体前屈拉大腿后侧 30 秒','仰卧 4 字拉臀部，每侧 30 秒'];
+  var C_UP  = ['扶机架拉伸胸部，每侧 30 秒','婴儿式放松后背 45 秒','手臂横过胸前拉肩，每侧 30 秒'];
+  var C_INC = ['小腿拉伸，每侧 30 秒','坐姿体前屈拉大腿后侧 30 秒','弓步拉伸髋屈肌，每侧 30 秒'];
+  var C_ALL = ['小腿拉伸，每侧 30 秒','大腿前侧、后侧拉伸各 30 秒','扶机架拉伸胸部，每侧 30 秒'];
+
+  // ex entries: [id, 快速版也做?, 当天覆盖]. min = 约多少分钟 [新手:[快速,完整], 有基础:[快速,完整]]
+  var DAYS = [
+    {k:'臀腿 A',tag:'臀腿',sub:'大腿前侧和臀部',min:[[25,45],[25,45]],warm:W_LOW,wm:5,cool:C_LOW,
+      ex:[['legpress',1],['legext',1],['kickback',1],['abduct',0],['bridge',1],['kneeraise',0]]},
+    {k:'背 + 手臂',tag:'背臂',sub:'后背线条和手臂',min:[[25,45],[25,45]],warm:W_UP,wm:5,cool:C_UP,
+      ex:[['pulldown',1],['row',1],['revfly',1],['strdown',0],['curl',1],['pushdown',0],['pullneg',0]]},
+    {k:'爬坡有氧',tag:'爬坡',sub:'跑步机坡度走加核心',min:[[28,40],[38,50]],warm:W_INC,wm:2,cool:C_INC,
+      ex:[['incwarm',1],['incmain',1],['inccool',1],['crunch',0],['kneeraise',0],['plank',0],['twist',0]]},
+    {k:'臀腿 B',tag:'臀腿',sub:'大腿后侧和臀部',min:[[25,45],[25,45]],warm:W_LOW,wm:5,cool:C_LOW,
+      ex:[['legpressw',1],['legcurl',1],['pullthrough',1],['split',1],['abduct',0],['deadbug',0]]},
+    {k:'胸肩 + 体态',tag:'胸肩',sub:'胸、肩和挺拔的上背',min:[[25,40],[25,40]],warm:W_UP,wm:5,cool:C_UP,
+      ex:[['press',1],['fly',1],['facepull',1],['lateral',0],['dip',0],['kcrunch',1]]},
+    {k:'全身循环',tag:'循环',sub:'力量轮一遍，爬坡收尾',min:[[25,40],[35,50]],warm:W_ALL,wm:5,cool:C_ALL,circuit:true,
+      ex:[['legpress',1,{s:[2,3],r:'15 次',rest:20}],['pulldown',1,{s:[2,3],r:'12 次',rest:20}],['press',1,{s:[2,3],r:'12 次',rest:20}],
+          ['bridge',1,{s:[2,3],r:'15 次',rest:20}],['crunch',0,{s:[2,3],r:['12 次','15 次'],rest:20}],['incfin',1]]},
+    {k:'休息 + 拉伸',tag:'休息',sub:'散步和拉伸，让身体恢复',min:[[10,40],[10,40]],warm:null,cool:null,
+      ex:[['walk',0],['hang',1],['catcow',1],['hipflex',1],['chestst',1],['fig4',0]]}
+  ];
+
+  // ---------- state ----------
+  var KEY = 'sanrenzhan-v1';
+  var S = {lv:0, md:'full', dt:1, w:{}, log:{}};
+  try{
+    var saved = JSON.parse(localStorage.getItem(KEY));
+    if(saved && typeof saved === 'object'){
+      if(saved.lv === 0 || saved.lv === 1) S.lv = saved.lv;
+      if(saved.md === 'quick' || saved.md === 'full') S.md = saved.md;
+      if(saved.dt === 0 || saved.dt === 1) S.dt = saved.dt;
+      if(saved.w && typeof saved.w === 'object') S.w = saved.w;
+      if(saved.log && typeof saved.log === 'object') S.log = saved.log;
+    }
+  }catch(e){}
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+  var now = new Date();
+  var todayIdx = (now.getDay() + 6) % 7;
+  var monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - todayIdx);
+  function dateOf(i){ return new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i); }
+  function keyOf(i){ var d = dateOf(i); return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2); }
+  var sel = todayIdx;
+
+  // drop check-offs older than ~8 weeks
+  (function(){ var cut = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 56), k;
+    for(k in S.log){ if(new Date(k + 'T00:00:00') < cut) delete S.log[k]; } })();
+
+  function pick(v){ return Array.isArray(v) ? v[S.lv] : v; }
+  function resolve(entry){
+    var id = entry[0], e = {}, k, src = [EX[id], entry[2] || {}];
+    for(var i=0;i<src.length;i++){ for(k in src[i]) e[k] = src[i][k]; }
+    if(S.lv === 0 && e.b){ for(k in e.b) e[k] = e.b[k]; }
+    var t = e.t != null ? pick(e.t) : null;
+    return {id:id, key:e.wk || id, n:e.n, st:e.st, sets:pick(e.s), t:t,
+            reps:t ? (t >= 120 ? Math.round(t/60) + ' 分钟' : t + ' 秒') : pick(e.r),
+            rest:e.rest, load:e.load || null, cue:pick(e.cue), q:!!entry[1], fin:!!e.fin, fig:e.fig || id, v:e.v || e.n, dk:e.dk || id};
+  }
+  function listFor(i){
+    var out = DAYS[i].ex.map(resolve);
+    return S.md === 'quick' ? out.filter(function(x){ return x.q; }) : out;
+  }
+  function got(i, x){ var d = S.log[keyOf(i)] || {}; return Math.min(x.sets, d[x.id] || 0); }
+  function setCount(i, id, n){
+    var k = keyOf(i); if(!S.log[k]) S.log[k] = {};
+    if(n <= 0) delete S.log[k][id]; else S.log[k][id] = n;
+    save();
+  }
+  function dayDone(i){ var l = listFor(i); return l.length > 0 && l.every(function(x){ return got(i,x) >= x.sets; }); }
+
+  // ---------- stick figures ----------
+  var reduced = false;
+  try{ reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+  function r1(n){ return Math.round(n*10)/10; }
+  function pt(o, i){ return r1(o[i]) + ' ' + r1(o[i+1]); }
+  function nearPath(o){
+    return 'M' + pt(o,2) + (o.length > 22 ? 'Q' + pt(o,22) + ' ' : 'L') + pt(o,4) +
+           'M' + pt(o,2) + 'L' + pt(o,6) + 'L' + pt(o,8) +
+           'M' + pt(o,4) + 'L' + pt(o,10) + 'L' + pt(o,12);
+  }
+  function farPath(o){
+    if(o.length < 22) return '';
+    return 'M' + pt(o,2) + 'L' + pt(o,14) + 'L' + pt(o,16) + 'M' + pt(o,4) + 'L' + pt(o,18) + 'L' + pt(o,20);
+  }
+  function drawFig(f, u){
+    var d = f.d, a = d.a, b = d.b, o = [], i, load = '', grip = '', dy = d.dyn || [];
+    for(i = 0; i < a.length; i++) o[i] = a[i] + (b[i] - a[i]) * u;
+    var fo = FO[f.id] || [], fd = '';
+    for(i = 0; i < fo.length; i++){
+      var j0 = fo[i][0], j1 = fo[i][1], fr = fo[i][2];
+      fd += 'M' + r1(o[j0] + (o[j1] - o[j0]) * fr) + ' ' + r1(o[j0+1] + (o[j1+1] - o[j0+1]) * fr) + 'h0.01';
+    }
+    f.focus.setAttribute('d', fd);
+    for(i = 0; i < dy.length; i++){
+      var q = dy[i];
+      if(q[0] === 'c') load += 'M' + q[1] + ' ' + q[2] + 'L' + pt(o, q[3]);
+      else if(q[0] === 't') load += 'M' + r1(o[q[1]] - q[2]) + ' ' + r1(o[q[1]+1] - q[3]) + 'L' + r1(o[q[1]] + q[2]) + ' ' + r1(o[q[1]+1] + q[3]);
+      else if(q[0] === 'd') grip += 'M' + pt(o, q[1]) + 'h0.01';
+    }
+    f.near.setAttribute('d', nearPath(o));
+    f.far.setAttribute('d', farPath(o));
+    f.load.setAttribute('d', load);
+    f.grip.setAttribute('d', grip);
+    f.head.setAttribute('cx', r1(o[0])); f.head.setAttribute('cy', r1(o[1]));
+  }
+  function figSvg(x){
+    var d = FIG[x.fig]; if(!d) return '';
+    return '<svg class="fig" viewBox="0 0 120 96" data-fig="' + x.fig + '" role="img" aria-label="' + x.n + ' 动作示意">' +
+      '<path class="f-prop" d="M6 88H114' + (d.st || '') + '"/>' +
+      '<path class="f-focus"/><path class="f-ghost"/><path class="f-far"/><path class="f-load"/><path class="f-near"/><circle class="f-head" r="6"/><path class="f-grip"/></svg>';
+  }
+  var figs = [];
+  var io = ('IntersectionObserver' in window) ? new IntersectionObserver(function(es){
+    es.forEach(function(e){ e.target._vis = e.isIntersecting; });
+  }, {rootMargin:'80px'}) : null;
+  function phase(ms){
+    var t = (ms % 2800) / 2800, u;
+    if(t < 0.38) u = t / 0.38; else if(t < 0.5) u = 1; else if(t < 0.88) u = 1 - (t - 0.5) / 0.38; else u = 0;
+    return u * u * (3 - 2 * u);
+  }
+  function mountFigs(){
+    if(io) io.disconnect();
+    figs = Array.prototype.map.call(document.querySelectorAll('#list svg.fig'), function(svg){
+      var f = {svg:svg, id:svg.dataset.fig, d:FIG[svg.dataset.fig], focus:svg.querySelector('.f-focus'), near:svg.querySelector('.f-near'), far:svg.querySelector('.f-far'),
+               load:svg.querySelector('.f-load'), grip:svg.querySelector('.f-grip'), head:svg.querySelector('.f-head')};
+      svg._vis = !io; if(io) io.observe(svg);
+      if(reduced){ svg.querySelector('.f-ghost').setAttribute('d', nearPath(f.d.a)); drawFig(f, 1); }
+      else drawFig(f, phase(performance.now()));
+      return f;
+    });
+  }
+  function loop(ms){
+    var u = phase(ms);
+    for(var i = 0; i < figs.length; i++){ if(figs[i].svg._vis) drawFig(figs[i], u); }
+    requestAnimationFrame(loop);
+  }
+
+  // ---------- render ----------
+  var $ = function(id){ return document.getElementById(id); };
+  var elWeek = $('week'), elHero = $('hero'), elList = $('list');
+
+  function renderWeek(){
+    elWeek.innerHTML = DAYS.map(function(d,i){
+      var cls = 'day' + (i === todayIdx ? ' today' : ''), done = dayDone(i);
+      return '<button type="button" class="' + cls + '" data-i="' + i + '" aria-pressed="' + (i === sel) + '" aria-label="周' + WD[i] + ' ' + d.k +
+        (i === todayIdx ? '，今天' : '') + (done ? '，已完成' : '') + '">' +
+        (done ? '<span class="ck" aria-hidden="true">✓</span>' : '') +
+        '<span class="wd">' + WD[i] + '</span><span class="tg">' + d.tag + '</span></button>';
+    }).join('');
+  }
+
+  function renderHero(list){
+    var d = DAYS[sel], dt = dateOf(sel), total = 0, done = 0;
+    list.forEach(function(x){ total += x.sets; done += got(sel, x); });
+    var all = total > 0 && done >= total;
+    elHero.innerHTML =
+      '<p class="eyebrow">周' + WD[sel] + ' · ' + (dt.getMonth()+1) + ' 月 ' + dt.getDate() + ' 日' + (sel === todayIdx ? ' · 今天' : '') + '</p>' +
+      '<h1>' + d.k + '</h1>' +
+      '<p class="hsub">' + d.sub + ' · 约 ' + d.min[S.lv][S.md === 'quick' ? 0 : 1] + ' 分钟 · ' + list.length + ' 个动作</p>' +
+      '<div class="prog"><i style="transform:scaleX(' + (total ? done/total : 0) + ')"></i></div>' +
+      '<p class="pnum">' + (all ? '今天练完了，记得做放松拉伸。' : '已完成 <b>' + done + '</b> / ' + total + ' 组') + '</p>';
+  }
+
+  function renderMap(list){
+    var used = {}; list.forEach(function(x){ used[x.st] = 1; });
+    Array.prototype.forEach.call(document.querySelectorAll('#map .stn'), function(el){
+      el.classList.toggle('on', !!used[el.dataset.st]);
+    });
+  }
+
+  function renderPlain(secId, ulId, items){
+    $(secId).hidden = !items;
+    $(ulId).innerHTML = items ? items.map(function(t){ return '<li>' + t + '</li>'; }).join('') : '';
+  }
+
+  function renderList(list){
+    var d = DAYS[sel], unit = d.circuit ? '轮' : '组';
+    var timed = list.some(function(x){ return x.t; });
+    $('main-h').textContent = d.circuit ? '循环训练' : (sel === 6 ? '恢复内容' : '训练');
+    $('main-cap').textContent = d.circuit
+      ? '按顺序每个动作做 1 组，全部做完算 1 轮。站位之间休息 20 秒，轮与轮之间休息 90 秒，最后上跑步机。'
+      : (sel === 6 ? '今天不上重量。带 ▶ 的圆点点一下开始计时。'
+                   : '做完一组点一个圆点，会自动开始休息计时。' + (timed ? '带 ▶ 的圆点点一下开始计时。' : '') + (S.dt ? '小人演示动作，下面的人体图标出发力的肌肉。' : ''));
+    elList.innerHTML = list.map(function(x){
+      var c = got(sel, x), dots = '', i;
+      for(i = 0; i < x.sets; i++){
+        var cls = 'set' + (x.t ? ' timed' : '') + (i < c ? ' done' : (i === c ? ' next' : ''));
+        dots += '<button type="button" class="' + cls + '" data-i="' + i + '" aria-label="' + x.n + ' 第 ' + (i+1) + ' 组' + (i < c ? '，已完成' : '') + '">' +
+          (x.t && i >= c ? '▶ ' : '') + (i+1) + '</button>';
+      }
+      var load = '';
+      if(x.load){
+        var v = S.w[x.key];
+        load = '<div class="load"><span class="load-l">起步 ' + HINT[x.load] + '<br>我用的配重</span>' +
+          '<button type="button" class="step" data-step="-1" aria-label="' + x.n + ' 减 1 片">−</button>' +
+          '<span class="lv' + (v ? '' : ' empty') + '">' + (v ? v + ' 片' : '未记') + '</span>' +
+          '<button type="button" class="step" data-step="1" aria-label="' + x.n + ' 加 1 片">+</button></div>';
+      }
+      var vid = '<a class="vid" target="_blank" rel="noopener" href="https://search.bilibili.com/all?keyword=' + encodeURIComponent(x.v + ' 动作教学') + '">看真人示范视频 ↗</a>';
+      var g = DT[x.dk], body;
+      if(S.dt && g){
+        body = '<div class="ex-body">' + figSvg(x) + '<div class="ex-text">' +
+          '<p class="kv"><span class="k">主要练</span>' + g.m + '</p>' +
+          '<p class="kv main"><span class="k">发力点</span>' + g.f + '</p></div></div>' + muscleBlock(x.dk) +
+          '<ol class="steps">' + g.s.map(function(t){ return '<li>' + pick(t) + '</li>'; }).join('') + '</ol>' +
+          '<p class="kv"><span class="k">呼吸</span>' + (g.br || '发力时呼气，还原时吸气') + '</p>' +
+          '<p class="kv"><span class="k">易错</span>' + g.e + '</p>' + vid;
+      } else {
+        body = '<div class="ex-body">' + figSvg(x) + '<div class="ex-text"><p class="cue">' + x.cue + '</p>' + vid + '</div></div>';
+      }
+      return '<li class="ex" data-id="' + x.id + '">' +
+        '<div class="ex-head"><span class="chip' + (x.st === 'Z' ? ' free' : '') + '" aria-hidden="true">' + (x.st === 'Z' ? '徒手' : x.st) + '</span>' +
+        '<div class="ex-title"><h3>' + x.n + '</h3><p class="ex-meta"><b>' + x.sets + '</b> ' + (x.fin ? '组' : unit) + ' × <b class="cn">' + x.reps + '</b>' +
+        (x.rest ? ' · 休息 ' + x.rest + ' 秒' : '') + '</p></div></div>' +
+        body +
+        '<div class="ex-foot"><div class="sets">' + dots + '</div>' + load + '</div></li>';
+    }).join('');
+    mountFigs();
+  }
+
+  function render(){
+    var list = listFor(sel), d = DAYS[sel];
+    renderWeek(); renderHero(list); renderMap(list);
+    $('warm-h').textContent = '热身 · ' + (d.wm || 5) + ' 分钟';
+    renderPlain('warm-sec', 'warm', d.warm);
+    renderList(list);
+    renderPlain('cool-sec', 'cool', d.cool);
+    $('lv-0').setAttribute('aria-pressed', S.lv === 0); $('lv-1').setAttribute('aria-pressed', S.lv === 1);
+    $('md-quick').setAttribute('aria-pressed', S.md === 'quick'); $('md-full').setAttribute('aria-pressed', S.md === 'full');
+    $('dt-1').setAttribute('aria-pressed', S.dt === 1); $('dt-0').setAttribute('aria-pressed', S.dt === 0);
+  }
+
+  // ---------- timer ----------
+  var T = null, AC = null, wake = null;
+  var elTimer = $('timer'), elClock = $('t-clock'), elBar = $('t-bar'), elLabel = $('t-label'), elNext = $('t-next'), btnA = $('t-a'), btnB = $('t-b');
+  function fmt(s){ return Math.floor(s/60) + ':' + ('0' + (s%60)).slice(-2); }
+  function primeAudio(){ try{ AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if(AC.state === 'suspended') AC.resume(); }catch(e){} }
+  function beep(){
+    try{
+      if(AC){ var o = AC.createOscillator(), g = AC.createGain(), t0 = AC.currentTime;
+        o.frequency.value = 880; g.gain.setValueAtTime(0.001, t0);
+        g.gain.exponentialRampToValueAtTime(0.25, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.6);
+        o.connect(g); g.connect(AC.destination); o.start(t0); o.stop(t0 + 0.6); }
+    }catch(e){}
+    try{ if(navigator.vibrate) navigator.vibrate(200); }catch(e){}
+  }
+  function holdWake(){ try{ if(navigator.wakeLock && !wake){ navigator.wakeLock.request('screen').then(function(w){ wake = w; }).catch(function(){}); } }catch(e){} }
+  function dropWake(){ try{ if(wake){ wake.release(); } }catch(e){} wake = null; }
+
+  function stopTimer(){
+    if(T){ clearInterval(T.iv); clearTimeout(T.to); }
+    T = null; elTimer.hidden = true; document.body.classList.remove('has-timer'); dropWake();
+  }
+  function showTimer(){ elTimer.hidden = false; document.body.classList.add('has-timer'); }
+  function startTimer(mode, secs, info){
+    stopTimer();
+    T = {mode:mode, end:Date.now() + secs*1000, total:secs, info:info};
+    if(mode === 'work'){ elLabel.textContent = '计时中'; elNext.textContent = info.name + (info.of > 1 ? ' · 第 ' + (info.idx+1) + ' 组' : ''); btnA.textContent = '取消'; btnB.textContent = '完成'; }
+    else { elLabel.textContent = '休息'; elNext.textContent = '下一组：' + info.name; btnA.textContent = '+15 秒'; btnB.textContent = '跳过'; }
+    btnA.hidden = false; showTimer(); holdWake(); tick();
+    T.iv = setInterval(tick, 250);
+  }
+  function tick(){
+    if(!T) return;
+    var left = Math.max(0, Math.ceil((T.end - Date.now())/1000));
+    elClock.textContent = fmt(left);
+    elBar.style.transform = 'scaleX(' + Math.max(0, Math.min(1, (T.end - Date.now())/(T.total*1000))) + ')';
+    if(left <= 0) finish();
+  }
+  function finish(){
+    var t = T; if(!t) return;
+    clearInterval(t.iv); beep();
+    if(t.mode === 'work'){ T = null; complete(t.info.id); return; }
+    T = {mode:'msg'};
+    elLabel.textContent = '休息结束'; elNext.textContent = '开始：' + t.info.name; elClock.textContent = '0:00';
+    elBar.style.transform = 'scaleX(0)'; btnA.hidden = true; btnB.textContent = '好';
+    T.to = setTimeout(stopTimer, 5000);
+  }
+  btnA.addEventListener('click', function(){
+    if(!T) return;
+    if(T.mode === 'work') stopTimer();
+    else if(T.mode === 'rest'){ T.end += 15000; T.total += 15; tick(); }
+  });
+  btnB.addEventListener('click', function(){
+    if(!T) return;
+    if(T.mode === 'work'){ var id = T.info.id; clearInterval(T.iv); T = null; complete(id); }
+    else stopTimer();
+  });
+
+  // ---------- actions ----------
+  function complete(id){
+    var list = listFor(sel), x = null, i, k, c;
+    for(i = 0; i < list.length; i++){ if(list[i].id === id){ x = list[i]; break; } }
+    if(!x){ stopTimer(); return; }
+    setCount(sel, id, got(sel, x) + 1);
+    render();
+    var open = function(y){ return got(sel, y) < y.sets; };
+    var left = list.filter(open);
+    if(!left.length){ stopTimer(); return; }
+    var rest = x.rest, next = null;
+    if(DAYS[sel].circuit){
+      var rot = list.filter(function(y){ return !y.fin; }), pos = rot.indexOf(x);
+      if(pos >= 0){
+        for(k = 1; k <= rot.length; k++){
+          c = rot[(pos + k) % rot.length];
+          if(open(c)){ next = c; if(pos + k >= rot.length) rest = 90; break; }
+        }
+      }
+      if(!next){ next = left[0]; rest = x.fin ? 0 : 90; }
+    } else {
+      next = open(x) ? x : left[0];
+    }
+    if(rest > 0 && next) startTimer('rest', rest, {name:next.n}); else stopTimer();
+  }
+
+  elList.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var li = b.closest('.ex'); if(!li) return;
+    var id = li.dataset.id, list = listFor(sel), x = null;
+    for(var i = 0; i < list.length; i++){ if(list[i].id === id){ x = list[i]; break; } }
+    if(!x) return;
+    if(b.classList.contains('set')){
+      primeAudio();
+      var idx = +b.dataset.i, c = got(sel, x);
+      if(idx < c){ stopTimer(); setCount(sel, id, idx); render(); }
+      else if(x.t){ startTimer('work', x.t, {id:id, name:x.n, idx:c, of:x.sets}); }
+      else { complete(id); }
+    } else if(b.dataset.step){
+      var v = (S.w[x.key] || 0) + (+b.dataset.step);
+      v = Math.max(0, Math.min(30, v));
+      if(v === 0) delete S.w[x.key]; else S.w[x.key] = v;
+      save(); render();
+    }
+  });
+
+  elWeek.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    sel = +b.dataset.i; stopTimer(); render();
+  });
+  document.querySelector('.controls').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    if(b.dataset.lv != null) S.lv = +b.dataset.lv;
+    if(b.dataset.md) S.md = b.dataset.md;
+    if(b.dataset.dt != null){ S.dt = +b.dataset.dt; save(); render(); return; }
+    save(); stopTimer(); render();
+  });
+
+  render();
+  if(!reduced) requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
