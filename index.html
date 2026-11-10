@@ -91,7 +91,7 @@ body.has-timer .wrap{padding-bottom:150px}
 .pnum b{font-family:var(--font-num);font-size:20px;font-weight:600;color:var(--hero-fg);font-variant-numeric:tabular-nums}
 
 /* controls */
-.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .ctl{display:flex;flex-direction:column;gap:5px;min-width:0}
 .ctl-l{font-size:12px;color:var(--ink-2);letter-spacing:.06em}
 .seg{display:flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px}
@@ -207,7 +207,43 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
 .lv{min-width:46px;text-align:center;font-family:var(--font-num);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
 .lv.empty{font-family:var(--font-body);font-size:13px;font-weight:400;color:var(--ink-2)}
 
-.notes{border-top:1px solid var(--line);padding-top:20px}
+.flow{gap:10px;scroll-margin-top:12px}
+.strip{display:flex;flex-wrap:wrap;gap:6px}
+.pill{min-width:38px;height:36px;padding:0 11px;border-radius:18px;border:1.5px solid var(--line);background:transparent;color:var(--ink-2);font-size:13px;line-height:1}
+.pill.num{padding:0;font-family:var(--font-num);font-size:17px;font-weight:600}
+.pill.part{border-color:var(--accent);color:var(--accent-ink)}
+.pill.done{background:var(--done);border-color:var(--done);color:var(--on-done)}
+.pill.cur{outline:2px solid var(--ink);outline-offset:1px;color:var(--ink)}
+.pill.done.cur{color:var(--on-done)}
+.list>.ex{border-top:0}
+.scard{background:var(--surface);border-radius:14px;padding:18px 16px;display:flex;flex-direction:column;gap:12px}
+.scard h3{font-size:20px;font-weight:600;line-height:1.3}
+.sk{font-size:12px;letter-spacing:.08em;color:var(--ink-2)}
+.more-h{border-top:1px solid var(--line);padding-top:14px;margin-top:4px}
+.navrow{display:flex;gap:8px}
+.nbtn{flex:1;min-width:0;min-height:48px;padding:8px 12px;border-radius:12px;border:1.5px solid var(--line);background:transparent;color:var(--ink);font-size:14px;line-height:1.3}
+.nbtn.back{flex:0 0 48px;padding:0;font-size:18px}
+.nbtn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600;font-size:15px}
+.nbtn:disabled{opacity:.45;cursor:default}
+.enter{animation:cardin .24s ease}
+@keyframes cardin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.fold{background:var(--surface);border-radius:12px}
+.fold>summary{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:13px 14px;font-size:14px;font-weight:600;cursor:pointer;list-style:none}
+.fold>summary::-webkit-details-marker{display:none}
+.fold>summary::after{content:"+";font-family:var(--font-num);font-size:22px;line-height:.8;color:var(--ink-2)}
+.fold[open]>summary::after{content:"–"}
+.fold>summary small{font-size:13px;font-weight:400;color:var(--ink-2);margin-left:4px}
+.fold>summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:12px}
+.fold-in{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+.queue{display:flex;flex-direction:column}
+.qrow{width:100%;display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 0;border:0;border-top:1px solid var(--line);background:transparent;text-align:left}
+.queue li:first-child .qrow{border-top:0}
+.qn{width:26px;height:26px;border-radius:13px;display:grid;place-items:center;background:var(--surface-2);font-family:var(--font-num);font-size:14px;font-weight:600;line-height:1}
+.qrow.done .qn{background:var(--done);color:var(--on-done)}
+.qt{min-width:0;font-size:14px;line-height:1.35}
+.qt small{display:block;font-size:12px;color:var(--ink-2)}
+.qrow.cur .qt{font-weight:600}
+.qs{font-family:var(--font-num);font-size:16px;color:var(--ink-2);font-variant-numeric:tabular-nums}
 
 /* rest timer */
 #timer{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--hero-bg);color:var(--hero-fg)}
@@ -225,14 +261,13 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
 .t-btns button{height:40px;padding:0 14px;border-radius:10px;font-size:14px;border:1px solid var(--hero-dim);background:transparent;color:var(--hero-fg)}
 .t-btns button.main{border-color:var(--accent);background:var(--accent);color:var(--on-accent);font-weight:600}
 
-@media (prefers-reduced-motion: reduce){.prog i{transition:none}.f-focus{animation:none}}
+@media (prefers-reduced-motion: reduce){.prog i{transition:none}.f-focus{animation:none}.enter{animation:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <p class="brand">紫怡训练计划</p>
-    <p class="intro">按这台三人站的站位排的一周计划，有氧用跑步机爬坡。重点是臀腿、后背和体态，重量从轻开始。新手每周挑 3–4 天练就够，优先臀腿和背。</p>
   </header>
 
   <section class="cal" aria-label="训练日历">
@@ -253,41 +288,22 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
 
   <section class="hero" id="hero" aria-live="polite"></section>
 
-  <div class="controls">
-    <div class="ctl">
-      <span class="ctl-l" id="lv-l">水平</span>
-      <div class="seg" role="group" aria-labelledby="lv-l">
-        <button type="button" id="lv-0" data-lv="0">新手</button>
-        <button type="button" id="lv-1" data-lv="1">有基础</button>
-      </div>
-    </div>
-    <div class="ctl">
-      <span class="ctl-l" id="md-l">时长</span>
-      <div class="seg" role="group" aria-labelledby="md-l">
-        <button type="button" id="md-quick" data-md="quick">快速</button>
-        <button type="button" id="md-full" data-md="full">完整</button>
-      </div>
-    </div>
-    <div class="ctl">
-      <span class="ctl-l" id="dt-l">说明</span>
-      <div class="seg" role="group" aria-labelledby="dt-l">
-        <button type="button" id="dt-1" data-dt="1">详细</button>
-        <button type="button" id="dt-0" data-dt="0">精简</button>
-      </div>
-    </div>
-    <div class="ctl">
-      <span class="ctl-l" id="un-l">配重单位</span>
-      <div class="seg" role="group" aria-labelledby="un-l">
-        <button type="button" id="un-p" data-unit="p">片</button>
-        <button type="button" id="un-k" data-unit="k">kg</button>
-      </div>
-    </div>
-  </div>
+  <section class="flow" id="flow" aria-label="今天的步骤">
+    <div class="strip" id="strip"></div>
+    <p class="cap" id="main-cap" hidden></p>
+    <div class="list" id="list"></div>
+  </section>
 
-  <section>
-    <h2>今天用到的站位</h2>
-    <p class="cap">面对机器看：左边是蹬腿，中间是主架，右边是引体塔和仰卧板。跑步机单独在最下面一格。亮起的是今天要用的。</p>
-    <div class="map" id="map">
+  <details class="fold" id="all-d">
+    <summary><span>全部动作 <small id="all-n"></small></span></summary>
+    <div class="fold-in"><ul class="queue" id="queue"></ul></div>
+  </details>
+
+  <details class="fold">
+    <summary><span>器械站位图</span></summary>
+    <div class="fold-in">
+      <p class="cap">面对机器看：左边是蹬腿，中间是主架，右边是引体塔和仰卧板。跑步机单独在最下面一格。亮起的是这一天要用的。</p>
+      <div class="map" id="map">
       <div class="stn s-H" data-st="H"><b>H</b><span>沙袋 · 暂不用</span></div>
       <div class="stn s-E" data-st="E"><b>E</b><span>蹬腿踏板</span></div>
       <div class="stn s-B" data-st="B"><b>B</b><span>高位滑轮 · 下拉杆</span></div>
@@ -298,27 +314,44 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
       <div class="stn s-G" data-st="G"><b>G</b><span>仰卧板</span></div>
       <div class="stn s-T" data-st="T"><b>T</b><span>跑步机 · 爬坡</span></div>
     </div>
-  </section>
+    </div>
+  </details>
 
-  <section id="warm-sec">
-    <h2 id="warm-h">热身</h2>
-    <ul class="plain" id="warm"></ul>
-  </section>
+  <details class="fold">
+    <summary><span>设置</span></summary>
+    <div class="fold-in">
+      <div class="controls">
+        <div class="ctl">
+          <span class="ctl-l" id="md-l">时长</span>
+          <div class="seg" role="group" aria-labelledby="md-l">
+            <button type="button" id="md-quick" data-md="quick">快速</button>
+            <button type="button" id="md-full" data-md="full">完整</button>
+          </div>
+        </div>
+        <div class="ctl">
+          <span class="ctl-l" id="dt-l">动作说明</span>
+          <div class="seg" role="group" aria-labelledby="dt-l">
+            <button type="button" id="dt-1" data-dt="1">详细</button>
+            <button type="button" id="dt-0" data-dt="0">精简</button>
+          </div>
+        </div>
+        <div class="ctl">
+          <span class="ctl-l" id="un-l">配重单位</span>
+          <div class="seg" role="group" aria-labelledby="un-l">
+            <button type="button" id="un-p" data-unit="p">片</button>
+            <button type="button" id="un-k" data-unit="k">kg</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
 
-  <section>
-    <h2 id="main-h">训练</h2>
-    <p class="cap" id="main-cap"></p>
-    <ul class="list" id="list"></ul>
-  </section>
-
-  <section id="cool-sec">
-    <h2>放松拉伸 · 5 分钟</h2>
-    <ul class="plain" id="cool"></ul>
-  </section>
-
-  <section class="notes">
-    <h2>用之前看一眼</h2>
-    <ul class="plain">
+  <details class="fold">
+    <summary><span>使用说明</span></summary>
+    <div class="fold-in">
+      <ul class="plain">
+      <li><b>怎么用：</b>页面一次只显示一步。做完一组点一个圆点，会自动开始休息计时；这个动作做完后点「下一个」，就换到下一个动作。上面那排数字可以跳到任意一步。</li>
+      <li><b>安排：</b>重点是臀腿、后背和体态。不用每天都练，每周 3–4 天就够，优先臀腿和背。</li>
       <li><b>选重量：</b>做到最后 2 次有点吃力、动作还不变形，就是合适的。卡片里的起步建议只是粗略起点，一组里换过重量就记最重的那次。</li>
       <li><b>加重量：</b>同一个动作连续两次训练都能做满最高次数，下次加 1 片。力量训练不会把女生练成大块头，放心加。</li>
       <li><b>爬坡：</b>坡度和速度按跑步机能调的范围来，够不到就用最高档。力量日练完想多出汗，可以加 10 分钟坡度 5–8% 的快走。</li>
@@ -329,7 +362,8 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
       <li><b>身体信号：</b>关节刺痛就停。经期或状态差的日子，换成周日的拉伸内容也算完成。</li>
       <li><b>记录：</b>每个动作当天用的配重记在卡片里，日历上可以点回任意一天查看和补记。打卡和配重都保存在这台手机的浏览器里，换设备不会同步，清除浏览器数据会丢失。</li>
     </ul>
-  </section>
+    </div>
+  </details>
 </div>
 
 <div id="timer" hidden>
@@ -385,7 +419,7 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
     pushdown:{n:'三头绳下压',st:'B',s:[2,3],r:['12 次','12–15 次'],rest:45,load:'轻',v:'绳索下压 肱三头肌',
       cue:'大臂贴住身体，压到手臂伸直时把绳子向两边分开。练手臂后侧。'},
     pullneg:{n:'离心引体',st:'F',s:3,r:'3–5 次',rest:75,v:'离心引体向上',
-      cue:'踩凳子跳到下巴过杠的位置，用 3–5 秒慢慢放下来。',
+      cue:'踩凳子跳到下巴过杠的位置，用 3–5 秒慢慢放下来。做不了就改成握住把手悬挂 15 秒。',
       b:{n:'悬挂',fig:'hang',dk:'hangb',v:'单杠悬挂',s:2,t:15,rest:45,cue:'握住引体把手自然悬挂，肩膀微微下沉，不要完全松垮。'}},
     press:{n:'坐姿推胸',st:'A',s:[3,3],r:['10–12 次','8–10 次'],rest:60,load:'中',
       cue:'调好蝴蝶臂档位，让把手在胸部中段高度。背贴靠垫，推到手臂快伸直，再慢慢收回。'},
@@ -395,9 +429,8 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
       cue:'三头绳挂高位，拉向眉心，手肘抬到和肩一样高并向两侧打开。久坐含胸的人很值得做。'},
     lateral:{n:'绳索侧平举',st:'C',s:[2,3],r:['每侧 10–12 次','每侧 12–15 次'],rest:40,load:'轻',
       cue:'侧身站，用最轻的重量，手臂向侧面抬到与肩同高即可，不要耸肩。'},
-    dip:{n:'双杠离心下放',st:'F',s:3,r:'4–6 次',rest:75,v:'双杠臂屈伸 离心',
-      cue:'在双杠上撑直，用 3 秒慢慢屈肘下放，脚落地后再跳回起始位置。',
-      b:{n:'凳上反屈伸',st:'Z',fig:'benchdip',dk:'benchdip',v:'凳上反屈伸',s:2,r:'8–10 次',rest:60,cue:'背对哑铃凳，双手撑在凳沿，屈肘下放臀部再撑起。膝盖弯着更轻松。'}},
+    dip:{n:'凳上反屈伸',st:'Z',fig:'benchdip',dk:'benchdip',v:'凳上反屈伸',s:3,r:'10–12 次',rest:60,
+      cue:'背对哑铃凳，双手撑在凳沿，屈肘下放臀部再撑起。膝盖弯着更轻松，腿伸直更难。'},
     kcrunch:{n:'跪姿绳索卷腹',st:'B',s:[2,3],r:['12 次','15 次'],rest:45,load:'轻',
       cue:'跪在高位滑轮前，双手握绳固定在耳侧，像鞠躬一样把胸口卷向骨盆，臀部不要往后坐。'},
     crunch:{n:'仰卧板卷腹',st:'G',s:[2,3],r:['10–12 次','15 次'],rest:40,
@@ -408,13 +441,13 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
       cue:'坐姿屈膝、上身后倾，双手合十左右转体，左右各算 1 次。'},
     incwarm:{n:'爬坡热身段',st:'T',fig:'incline',v:'跑步机爬坡 正确姿势',s:1,t:180,rest:0,
       cue:'坡度 2–3%，速度 4–4.5 km/h（约 2.5–2.8 mph），先把身体走热。'},
-    incmain:{n:'爬坡主段',st:'T',fig:'incline',v:'跑步机爬坡 正确姿势',s:1,t:[1200,1800],rest:0,
-      cue:['坡度 6–8%，速度 4.5 km/h（约 2.8 mph）。' + LEAN, '坡度 10–12%，速度 4.8–5 km/h（约 3 mph）。' + LEAN]},
+    incmain:{n:'爬坡主段',st:'T',fig:'incline',v:'跑步机爬坡 正确姿势',s:1,t:[1200,1500],rest:0,
+      cue:['坡度 6–8%，速度 4.5 km/h（约 2.8 mph）。' + LEAN, '坡度 8–10%，速度 4.5–5 km/h（约 2.8–3 mph）。' + LEAN]},
     inccool:{n:'爬坡收尾段',st:'T',fig:'incline',v:'跑步机爬坡 正确姿势',s:1,t:180,rest:0,
       cue:'坡度降到 0–2%，放慢速度，走到呼吸平稳再下机。'},
-    incfin:{n:'爬坡收尾',st:'T',fig:'incline',v:'跑步机爬坡 正确姿势',s:1,t:[600,900],rest:0,fin:true,
+    incfin:{n:'爬坡收尾',st:'T',fig:'incline',v:'跑步机爬坡 正确姿势',s:1,t:[600,720],rest:0,fin:true,
       cue:['循环全部做完再上跑步机。坡度 5–6%，速度 4.5 km/h（约 2.8 mph），最后 2 分钟把坡度降下来。',
-           '循环全部做完再上跑步机。坡度 8–10%，速度 5 km/h（约 3 mph），最后 2 分钟把坡度降下来。']},
+           '循环全部做完再上跑步机。坡度 6–8%，速度 4.8 km/h（约 3 mph），最后 2 分钟把坡度降下来。']},
     walk:{n:'散步或跑步机慢走',st:'T',v:'跑步机 慢走',s:1,r:'20–30 分钟',rest:0,
       cue:'出门走走，或者在跑步机上不开坡度慢走。心率微微升高，还能正常聊天。'},
     hang:{n:'悬挂放松',st:'F',v:'单杠悬挂 放松',s:2,t:[15,20],rest:30,
@@ -609,7 +642,7 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
       br:'自然呼吸', e:'一上来就开大坡度；低头看脚。'},
     incmain:{m:'臀部、大腿后侧、小腿，同时练心肺',
       f:'每一步用后腿的屁股把身体往上、往前推，像在上楼梯。步子不用大，臀部和小腿会慢慢发热发酸。',
-      s:[['把坡度调到 6–8%，速度 4.5 km/h（约 2.8 mph）。','把坡度调到 10–12%，速度 4.8–5 km/h（约 3 mph）。'],'身体从脚踝处略微前倾，收紧小腹，全脚掌落地，后腿蹬直时夹一下臀。','手臂自然摆动，不抓扶手。保持在能断续说话、但唱不了歌的强度，走到时间结束。'],
+      s:[['把坡度调到 6–8%，速度 4.5 km/h（约 2.8 mph）。','把坡度调到 8–10%，速度 4.5–5 km/h（约 2.8–3 mph）。'],'身体从脚踝处略微前倾，收紧小腹，全脚掌落地，后腿蹬直时夹一下臀。','手臂自然摆动，不抓扶手。保持在能断续说话、但唱不了歌的强度，走到时间结束。'],
       br:'鼻吸嘴呼，保持节奏', e:'抓着扶手往后仰，坡度就白开了；踮着脚尖走；步子迈太大。'},
     inccool:{m:'放松恢复',
       f:'不用发力，放慢步子，让呼吸和心率降下来。',
@@ -617,7 +650,7 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
       br:'慢而深的呼吸', e:'直接按停就下机，容易头晕。'},
     incfin:{m:'臀部、大腿后侧、小腿，同时练心肺',
       f:'每一步用后腿的屁股把身体往上、往前推，像在上楼梯。步子不用大，臀部和小腿会慢慢发热发酸。',
-      s:[['循环全部做完后上跑步机，坡度 5–6%，速度 4.5 km/h（约 2.8 mph）。','循环全部做完后上跑步机，坡度 8–10%，速度 5 km/h（约 3 mph）。'],'身体略微前倾，收紧小腹，全脚掌落地，手臂自然摆动，不抓扶手。','最后 2 分钟把坡度降到 0–2%，慢走收尾。'],
+      s:[['循环全部做完后上跑步机，坡度 5–6%，速度 4.5 km/h（约 2.8 mph）。','循环全部做完后上跑步机，坡度 6–8%，速度 4.8 km/h（约 3 mph）。'],'身体略微前倾，收紧小腹，全脚掌落地，手臂自然摆动，不抓扶手。','最后 2 分钟把坡度降到 0–2%，慢走收尾。'],
       br:'鼻吸嘴呼，保持节奏', e:'抓着扶手往后仰；踮着脚尖走；直接按停下机。'},
     walk:{m:'恢复，促进血液循环',
       f:'轻松走，不追求强度。',
@@ -800,13 +833,13 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
       ex:[['legpress',1],['legext',1],['kickback',1],['abduct',0],['bridge',1],['kneeraise',0]]},
     {k:'背 + 手臂',tag:'背臂',sub:'后背线条和手臂',min:[[25,45],[25,45]],warm:W_UP,wm:5,cool:C_UP,
       ex:[['pulldown',1],['row',1],['revfly',1],['strdown',0],['curl',1],['pushdown',0],['pullneg',0]]},
-    {k:'爬坡有氧',tag:'爬坡',sub:'跑步机坡度走加核心',min:[[28,40],[38,50]],warm:W_INC,wm:2,cool:C_INC,
+    {k:'爬坡有氧',tag:'爬坡',sub:'跑步机坡度走加核心',min:[[28,40],[33,46]],warm:W_INC,wm:2,cool:C_INC,
       ex:[['incwarm',1],['incmain',1],['inccool',1],['crunch',0],['kneeraise',0],['plank',0],['twist',0]]},
     {k:'臀腿 B',tag:'臀腿',sub:'大腿后侧和臀部',min:[[25,45],[25,45]],warm:W_LOW,wm:5,cool:C_LOW,
       ex:[['legpressw',1],['legcurl',1],['pullthrough',1],['split',1],['abduct',0],['deadbug',0]]},
     {k:'胸肩 + 体态',tag:'胸肩',sub:'胸、肩和挺拔的上背',min:[[25,40],[25,40]],warm:W_UP,wm:5,cool:C_UP,
       ex:[['press',1],['fly',1],['facepull',1],['lateral',0],['dip',0],['kcrunch',1]]},
-    {k:'全身循环',tag:'循环',sub:'力量轮一遍，爬坡收尾',min:[[25,40],[35,50]],warm:W_ALL,wm:5,cool:C_ALL,circuit:true,
+    {k:'全身循环',tag:'循环',sub:'力量轮一遍，爬坡收尾',min:[[25,40],[30,45]],warm:W_ALL,wm:5,cool:C_ALL,circuit:true,
       ex:[['legpress',1,{s:[2,3],r:'15 次',rest:20}],['pulldown',1,{s:[2,3],r:'12 次',rest:20}],['press',1,{s:[2,3],r:'12 次',rest:20}],
           ['bridge',1,{s:[2,3],r:'15 次',rest:20}],['crunch',0,{s:[2,3],r:['12 次','15 次'],rest:20}],['incfin',1]]},
     {k:'休息 + 拉伸',tag:'休息',sub:'散步和拉伸，让身体恢复',min:[[10,40],[10,40]],warm:null,cool:null,
@@ -815,17 +848,17 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
 
   // ---------- state ----------
   var KEY = 'sanrenzhan-v1';
-  // log[date][exercise] = sets done, wt[date][exercise] = [amount, unit], fin[date] = finished, w = pre-calendar weights
-  var S = {lv:0, md:'full', dt:1, cal:'w', unit:'p', w:{}, log:{}, wt:{}, fin:{}};
+  // log[date][exercise] = sets done, wt[date][exercise] = [amount, unit], fin / wu / cd[date] = day, warm-up, cool-down done, w = pre-calendar weights.
+  // lv is fixed at 1: one plan for someone with some training behind her.
+  var S = {lv:1, md:'full', dt:1, cal:'w', unit:'p', w:{}, log:{}, wt:{}, fin:{}, wu:{}, cd:{}};
   try{
     var saved = JSON.parse(localStorage.getItem(KEY));
     if(saved && typeof saved === 'object'){
-      if(saved.lv === 0 || saved.lv === 1) S.lv = saved.lv;
       if(saved.md === 'quick' || saved.md === 'full') S.md = saved.md;
       if(saved.dt === 0 || saved.dt === 1) S.dt = saved.dt;
       if(saved.cal === 'w' || saved.cal === 'm') S.cal = saved.cal;
       if(saved.unit === 'p' || saved.unit === 'k') S.unit = saved.unit;
-      ['w','log','wt','fin'].forEach(function(n){ if(saved[n] && typeof saved[n] === 'object') S[n] = saved[n]; });
+      ['w','log','wt','fin','wu','cd'].forEach(function(n){ if(saved[n] && typeof saved[n] === 'object') S[n] = saved[n]; });
     }
   }catch(e){}
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
@@ -843,7 +876,7 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
 
   // keep a little over a year of records
   (function(){ var cut = keyOf(addDays(today, -400));
-    ['log','wt','fin'].forEach(function(n){ for(var k in S[n]){ if(k < cut) delete S[n][k]; } }); })();
+    ['log','wt','fin','wu','cd'].forEach(function(n){ for(var k in S[n]){ if(k < cut) delete S[n][k]; } }); })();
 
   function pick(v){ return Array.isArray(v) ? v[S.lv] : v; }
   function resolve(entry){
@@ -965,7 +998,55 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
 
   // ---------- render ----------
   var $ = function(id){ return document.getElementById(id); };
-  var elWeek = $('week'), elHero = $('hero'), elList = $('list');
+  var elWeek = $('week'), elHero = $('hero'), elList = $('list'), elStrip = $('strip'), elQueue = $('queue');
+  var step = 0;          // which step of the day is on screen; steps.length = the finished screen
+  var lastDone = null;   // exercise whose set was just ticked (circuit days use it to offer the next station)
+  var shownKey = '';
+
+  // a day = warm-up, the exercises, cool-down
+  function stepsFor(idx){
+    var d = DAYS[idx], out = [];
+    if(d.warm) out.push({type:'warm'});
+    listFor(idx).forEach(function(x){ out.push({type:'ex', x:x}); });
+    if(d.cool) out.push({type:'cool'});
+    return out;
+  }
+  function exOpen(dkey, x){ return got(dkey, x) < x.sets; }
+  function anyLogged(steps, dkey){ return steps.some(function(s){ return s.type === 'ex' && got(dkey, s.x) > 0; }); }
+  function stepDone(st, dkey, steps){
+    if(st.type === 'warm') return !!S.wu[dkey] || anyLogged(steps, dkey);
+    if(st.type === 'cool') return !!S.cd[dkey];
+    return !exOpen(dkey, st.x);
+  }
+  // next exercise still to do after step i (wraps round; a circuit finisher waits until the rest is done)
+  function nextEx(steps, dkey, i){
+    var n = steps.length, k, j, st;
+    for(k = 1; k <= n; k++){ j = (i + k) % n; st = steps[j]; if(j !== i && st.type === 'ex' && !st.x.fin && exOpen(dkey, st.x)) return j; }
+    for(j = 0; j < n; j++){ st = steps[j]; if(j !== i && st.type === 'ex' && exOpen(dkey, st.x)) return j; }
+    return -1;
+  }
+  function coolIndex(steps, dkey){
+    for(var j = 0; j < steps.length; j++){ if(steps[j].type === 'cool' && !S.cd[dkey]) return j; }
+    return steps.length;
+  }
+  function nextTarget(steps, dkey, i){
+    var j = nextEx(steps, dkey, i);
+    return j >= 0 ? j : coolIndex(steps, dkey);
+  }
+  function autoStep(steps, dkey, circuit){
+    if(steps.length && steps[0].type === 'warm' && !S.wu[dkey] && !anyLogged(steps, dkey)) return 0;
+    var j = -1, best = 1e9;
+    steps.forEach(function(st, i){
+      if(st.type !== 'ex' || !exOpen(dkey, st.x)) return;
+      var c = circuit ? (st.x.fin ? 1e6 : got(dkey, st.x)) : i;
+      if(c < best){ best = c; j = i; }
+    });
+    return j >= 0 ? j : coolIndex(steps, dkey);
+  }
+  function stepName(steps, j){
+    if(j >= steps.length) return '完成';
+    return steps[j].type === 'warm' ? '热身' : (steps[j].type === 'cool' ? '放松拉伸' : steps[j].x.n);
+  }
 
   function cell(d, out){
     var st = dayState(d), isT = d.getTime() === today.getTime(), dd = DAYS[wdOf(d)];
@@ -1007,7 +1088,7 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
       '<h1>' + d.k + '</h1>' +
       '<p class="hsub">' + d.sub + ' · 约 ' + d.min[S.lv][S.md === 'quick' ? 0 : 1] + ' 分钟 · ' + list.length + ' 个动作</p>' +
       '<div class="prog"><i style="transform:scaleX(' + (total ? done/total : 0) + ')"></i></div>' +
-      '<p class="pnum">' + (all ? (isT ? '今天练完了，记得做放松拉伸。' : '这一天全部完成。') : '已完成 <b>' + done + '</b> / ' + total + ' 组') + '</p>';
+      '<p class="pnum">' + (all ? '动作全部完成。' : '已完成 <b>' + done + '</b> / ' + total + ' 组') + '</p>';
   }
 
   function renderMap(list){
@@ -1017,9 +1098,25 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
     });
   }
 
-  function renderPlain(secId, ulId, items){
-    $(secId).hidden = !items;
-    $(ulId).innerHTML = items ? items.map(function(t){ return '<li>' + t + '</li>'; }).join('') : '';
+  function renderStrip(steps, dkey){
+    var n = 0;
+    elStrip.innerHTML = steps.map(function(st, i){
+      var done = stepDone(st, dkey, steps), part = st.type === 'ex' && !done && got(dkey, st.x) > 0;
+      var label = st.type === 'warm' ? '热身' : (st.type === 'cool' ? '拉伸' : String(++n));
+      return '<button type="button" class="pill' + (st.type === 'ex' ? ' num' : '') + (done ? ' done' : (part ? ' part' : '')) + (i === step ? ' cur' : '') + '" data-go="' + i +
+        '" aria-label="' + stepName(steps, i) + (done ? '，已完成' : '') + (i === step ? '，当前' : '') + '">' + label + '</button>';
+    }).join('');
+  }
+  function renderQueue(steps, dkey){
+    var n = 0, cnt = 0;
+    elQueue.innerHTML = steps.map(function(st, i){
+      var done = stepDone(st, dkey, steps), num, sub, prog = '';
+      if(st.type === 'ex'){ num = String(++n); cnt++; sub = st.x.sets + ' 组 × ' + st.x.reps; prog = got(dkey, st.x) + '/' + st.x.sets; }
+      else { num = st.type === 'warm' ? '热' : '拉'; sub = st.type === 'warm' ? '开始之前活动开' : '练完放松'; }
+      return '<li><button type="button" class="qrow' + (done ? ' done' : '') + (i === step ? ' cur' : '') + '" data-go="' + i + '">' +
+        '<span class="qn">' + (done ? '✓' : num) + '</span><span class="qt">' + stepName(steps, i) + '<small>' + sub + '</small></span><span class="qs">' + prog + '</span></button></li>';
+    }).join('');
+    $('all-n').textContent = cnt + ' 个';
   }
 
   function weightBlock(x, dkey, future){
@@ -1046,54 +1143,103 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
     return row + '<p class="whint">' + hint + '<button type="button" class="linkbtn" data-hist="1">' + (openHist[x.key] ? '收起历史' : '历史记录') + '</button></p>' + hist;
   }
 
-  function renderList(list){
-    var idx = wdOf(sel), d = DAYS[idx], dkey = keyOf(sel), future = sel > today, unit = d.circuit ? '轮' : '组';
-    var timed = list.some(function(x){ return x.t; });
-    $('main-h').textContent = d.circuit ? '循环训练' : (idx === 6 ? '恢复内容' : '训练');
-    $('main-cap').textContent = future ? '这是之后的计划，到当天再打卡和记录配重。' : (d.circuit
-      ? '按顺序每个动作做 1 组，全部做完算 1 轮。站位之间休息 20 秒，轮与轮之间休息 90 秒，最后上跑步机。'
-      : (idx === 6 ? '休息日不上重量。带 ▶ 的圆点点一下开始计时。'
-                   : '做完一组点一个圆点，会自动开始休息计时。' + (timed ? '带 ▶ 的圆点点一下开始计时。' : '') + (S.dt ? '小人演示动作，下面的人体图标出发力的肌肉。' : '')));
-    elList.innerHTML = list.map(function(x){
-      var c = got(dkey, x), dots = '', i;
-      for(i = 0; i < x.sets; i++){
-        var cls = 'set' + (x.t ? ' timed' : '') + (i < c ? ' done' : (i === c && !future ? ' next' : ''));
-        dots += '<button type="button" class="' + cls + '" data-i="' + i + '"' + (future ? ' disabled' : '') + ' aria-label="' + x.n + ' 第 ' + (i+1) + ' 组' + (i < c ? '，已完成' : '') + '">' +
-          (x.t && i >= c ? '▶ ' : '') + (i+1) + '</button>';
-      }
-      var vid = '<a class="vid" target="_blank" rel="noopener" href="https://search.bilibili.com/all?keyword=' + encodeURIComponent(x.v + ' 动作教学') + '">看真人示范视频 ↗</a>';
-      var g = DT[x.dk], body;
-      if(S.dt && g){
-        body = '<div class="ex-body">' + figSvg(x) + '<div class="ex-text">' +
-          '<p class="kv"><span class="k">主要练</span>' + g.m + '</p>' +
-          '<p class="kv main"><span class="k">发力点</span>' + g.f + '</p></div></div>' + muscleBlock(x.dk) +
-          '<ol class="steps">' + g.s.map(function(t){ return '<li>' + pick(t) + '</li>'; }).join('') + '</ol>' +
-          '<p class="kv"><span class="k">呼吸</span>' + (g.br || '发力时呼气，还原时吸气') + '</p>' +
-          '<p class="kv"><span class="k">易错</span>' + g.e + '</p>' + vid;
-      } else {
-        body = '<div class="ex-body">' + figSvg(x) + '<div class="ex-text"><p class="cue">' + x.cue + '</p>' + vid + '</div></div>';
-      }
-      return '<li class="ex" data-id="' + x.id + '">' +
-        '<div class="ex-head"><span class="chip' + (x.st === 'Z' ? ' free' : '') + '" aria-hidden="true">' + (x.st === 'Z' ? '徒手' : x.st) + '</span>' +
-        '<div class="ex-title"><h3>' + x.n + '</h3><p class="ex-meta"><b>' + x.sets + '</b> ' + (x.fin ? '组' : unit) + ' × <b class="cn">' + x.reps + '</b>' +
-        (x.rest ? ' · 休息 ' + x.rest + ' 秒' : '') + '</p></div></div>' +
-        body +
-        '<div class="ex-foot"><div class="sets">' + dots + '</div>' + weightBlock(x, dkey, future) + '</div></li>';
-    }).join('');
+  function navRow(steps, dkey, i, primary, future, nextLabel){
+    var j = nextTarget(steps, dkey, i);
+    return '<div class="navrow">' + (i > 0 ? '<button type="button" class="nbtn back" data-go="prev" aria-label="上一步">←</button>' : '') +
+      '<button type="button" class="nbtn' + (primary && !future ? ' primary' : '') + '" data-go="next">' + (nextLabel || '') + (j >= steps.length ? '完成' : '下一个：' + stepName(steps, j)) + ' →</button></div>';
+  }
+  function exCard(steps, dkey, i, d, future){
+    var x = steps[i].x, c = got(dkey, x), dots = '', k, n = 0, total = 0;
+    steps.forEach(function(st, q){ if(st.type === 'ex'){ total++; if(q <= i) n++; } });
+    for(k = 0; k < x.sets; k++){
+      var cls = 'set' + (x.t ? ' timed' : '') + (k < c ? ' done' : (k === c && !future ? ' next' : ''));
+      dots += '<button type="button" class="' + cls + '" data-i="' + k + '"' + (future ? ' disabled' : '') + ' aria-label="' + x.n + ' 第 ' + (k+1) + ' 组' + (k < c ? '，已完成' : '') + '">' +
+        (x.t && k >= c ? '▶ ' : '') + (k+1) + '</button>';
+    }
+    var vid = '<a class="vid" target="_blank" rel="noopener" href="https://search.bilibili.com/all?keyword=' + encodeURIComponent(x.v + ' 动作教学') + '">看真人示范视频 ↗</a>';
+    var g = DT[x.dk], top, more = '';
+    if(S.dt && g){
+      top = '<div class="ex-body">' + figSvg(x) + '<div class="ex-text">' +
+        '<p class="kv"><span class="k">主要练</span>' + g.m + '</p>' +
+        '<p class="kv main"><span class="k">发力点</span>' + g.f + '</p></div></div>';
+      more = '<p class="sk more-h">动作说明</p>' + muscleBlock(x.dk) +
+        '<ol class="steps">' + g.s.map(function(t){ return '<li>' + pick(t) + '</li>'; }).join('') + '</ol>' +
+        '<p class="kv"><span class="k">呼吸</span>' + (g.br || '发力时呼气，还原时吸气') + '</p>' +
+        '<p class="kv"><span class="k">易错</span>' + g.e + '</p>' + vid;
+    } else {
+      top = '<div class="ex-body">' + figSvg(x) + '<div class="ex-text"><p class="cue">' + x.cue + '</p>' + vid + '</div></div>';
+    }
+    var ready = !exOpen(dkey, x) || (d.circuit && lastDone === x.id);
+    var skip = ready ? '' : (c > 0 ? '先做' : '跳过，');
+    var nav = navRow(steps, dkey, i, ready, future, '');
+    if(!ready && !future) nav = nav.replace('下一个：', skip === '先做' ? '先去做：' : '跳过，下一个：');
+    return '<article class="ex" data-id="' + x.id + '">' +
+      '<p class="sk">第 ' + n + ' 个动作，共 ' + total + ' 个' + (ready && !future ? ' · 已完成' : '') + '</p>' +
+      '<div class="ex-head"><span class="chip' + (x.st === 'Z' ? ' free' : '') + '" aria-hidden="true">' + (x.st === 'Z' ? '徒手' : x.st) + '</span>' +
+      '<div class="ex-title"><h3>' + x.n + '</h3><p class="ex-meta"><b>' + x.sets + '</b> ' + (d.circuit && !x.fin ? '轮' : '组') + ' × <b class="cn">' + x.reps + '</b>' +
+      (x.rest ? ' · 休息 ' + x.rest + ' 秒' : '') + '</p></div></div>' +
+      top +
+      '<div class="ex-foot"><div class="sets">' + dots + '</div>' + weightBlock(x, dkey, future) + nav + '</div>' +
+      more + '</article>';
+  }
+  function plainCard(steps, dkey, i, d, future){
+    var warm = steps[i].type === 'warm', items = warm ? d.warm : d.cool, done = stepDone(steps[i], dkey, steps);
+    return '<article class="scard"><p class="sk">' + (warm ? '开始之前' : '练完之后') + (done ? ' · 已完成' : '') + '</p>' +
+      '<h3>' + (warm ? '热身 · ' + (d.wm || 5) + ' 分钟' : '放松拉伸 · 5 分钟') + '</h3>' +
+      '<ul class="plain">' + items.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ul>' +
+      '<div class="navrow">' + (i > 0 ? '<button type="button" class="nbtn back" data-go="prev" aria-label="上一步">←</button>' : '') +
+      '<button type="button" class="nbtn primary" data-act="' + (warm ? 'warm' : 'cool') + '"' + (future ? ' disabled' : '') + '>' +
+      (warm ? '热身做完了，开始：' + stepName(steps, nextTarget(steps, dkey, i)) : '拉伸做完了') + ' →</button></div></article>';
+  }
+  function doneCard(steps, dkey, future){
+    var sets = 0, open = 0, recs = [], isT = sel.getTime() === today.getTime(), first = -1;
+    steps.forEach(function(st, i){
+      if(st.type !== 'ex') return;
+      if(first < 0) first = i;
+      sets += got(dkey, st.x); if(exOpen(dkey, st.x)) open++;
+      var r = st.x.load && recOf(dkey, st.x.key); if(r) recs.push('<li>' + st.x.n + ' · <b>' + fmtRec(r) + '</b></li>');
+    });
+    return '<article class="scard"><p class="sk">' + dateText(sel) + '</p>' +
+      '<h3>' + (open ? '先到这里' : (isT ? '今天练完了' : '这一天练完了')) + '</h3>' +
+      '<p class="cue">一共完成 ' + sets + ' 组。' + (open ? '还有 ' + open + ' 个动作没做完。' : '') + '</p>' +
+      (recs.length ? '<p class="sk">这一天的配重</p><ul class="plain">' + recs.join('') + '</ul>' : '') +
+      '<div class="navrow">' + (open ? '<button type="button" class="nbtn primary" data-act="open">去做剩下的 →</button>' : '') +
+      '<button type="button" class="nbtn" data-act="review">回看动作</button></div></article>';
+  }
+  function renderCard(steps, dkey, d){
+    var future = sel > today, html;
+    if(step >= steps.length) html = doneCard(steps, dkey, future);
+    else if(steps[step].type === 'ex') html = exCard(steps, dkey, step, d, future);
+    else html = plainCard(steps, dkey, step, d, future);
+    elList.innerHTML = html;
+    var key = dkey + '#' + step;
+    if(key !== shownKey && elList.firstChild){ elList.firstChild.classList.add('enter'); }
+    shownKey = key;
+    var cap = future ? '这是之后的计划，到当天再打卡和记录配重。' : (d.circuit ? '循环日：每个动作做 1 组就换下一个，全部轮完算 1 轮，最后上跑步机。' : '');
+    $('main-cap').hidden = !cap; $('main-cap').textContent = cap;
     mountFigs();
   }
 
   function render(){
-    var idx = wdOf(sel), list = listFor(idx), d = DAYS[idx];
+    var idx = wdOf(sel), d = DAYS[idx], dkey = keyOf(sel), steps = stepsFor(idx);
+    var list = steps.filter(function(s){ return s.type === 'ex'; }).map(function(s){ return s.x; });
+    if(step > steps.length) step = steps.length;
     renderCal(); renderHero(list); renderMap(list);
-    $('warm-h').textContent = '热身 · ' + (d.wm || 5) + ' 分钟';
-    renderPlain('warm-sec', 'warm', d.warm);
-    renderList(list);
-    renderPlain('cool-sec', 'cool', d.cool);
-    $('lv-0').setAttribute('aria-pressed', S.lv === 0); $('lv-1').setAttribute('aria-pressed', S.lv === 1);
+    renderStrip(steps, dkey); renderQueue(steps, dkey); renderCard(steps, dkey, d);
     $('md-quick').setAttribute('aria-pressed', S.md === 'quick'); $('md-full').setAttribute('aria-pressed', S.md === 'full');
     $('dt-1').setAttribute('aria-pressed', S.dt === 1); $('dt-0').setAttribute('aria-pressed', S.dt === 0);
     $('un-p').setAttribute('aria-pressed', S.unit === 'p'); $('un-k').setAttribute('aria-pressed', S.unit === 'k');
+  }
+  function resetStep(){
+    var idx = wdOf(sel);
+    step = autoStep(stepsFor(idx), keyOf(sel), !!DAYS[idx].circuit); lastDone = null;
+  }
+  function showDay(d){
+    sel = d; view = new Date(d.getFullYear(), d.getMonth(), 1);
+    stopTimer(); resetStep(); $('all-d').open = sel > today; render();
+  }
+  function toCard(){
+    try{ $('flow').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }catch(e){}
   }
 
   // ---------- timer ----------
@@ -1122,7 +1268,7 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
     stopTimer();
     T = {mode:mode, end:Date.now() + secs*1000, total:secs, info:info};
     if(mode === 'work'){ elLabel.textContent = '计时中'; elNext.textContent = info.name + (info.of > 1 ? ' · 第 ' + (info.idx+1) + ' 组' : ''); btnA.textContent = '取消'; btnB.textContent = '完成'; }
-    else { elLabel.textContent = '休息'; elNext.textContent = '下一组：' + info.name; btnA.textContent = '+15 秒'; btnB.textContent = '跳过'; }
+    else { elLabel.textContent = '休息'; elNext.textContent = '接下来：' + info.name; btnA.textContent = '+15 秒'; btnB.textContent = '跳过'; }
     btnA.hidden = false; showTimer(); holdWake(); tick();
     T.iv = setInterval(tick, 250);
   }
@@ -1154,96 +1300,108 @@ h2{font-size:15px;font-weight:600;letter-spacing:.02em}
   });
 
   // ---------- actions ----------
-  function findX(id){
-    var list = listFor(wdOf(sel));
-    for(var i = 0; i < list.length; i++){ if(list[i].id === id) return list[i]; }
-    return null;
+  function curSteps(){ return stepsFor(wdOf(sel)); }
+  function indexOfEx(steps, id){
+    for(var i = 0; i < steps.length; i++){ if(steps[i].type === 'ex' && steps[i].x.id === id) return i; }
+    return -1;
   }
   function complete(id){
-    var idx = wdOf(sel), dkey = keyOf(sel), list = listFor(idx), x = null, i, k, c;
-    for(i = 0; i < list.length; i++){ if(list[i].id === id){ x = list[i]; break; } }
-    if(!x){ stopTimer(); return; }
+    var idx = wdOf(sel), dkey = keyOf(sel), steps = curSteps(), i = indexOfEx(steps, id);
+    if(i < 0){ stopTimer(); return; }
+    var x = steps[i].x, circuit = !!DAYS[idx].circuit;
     setCount(dkey, id, got(dkey, x) + 1);
-    var open = function(y){ return got(dkey, y) < y.sets; };
-    var left = list.filter(open);
-    if(!left.length){ S.fin[dkey] = 1; save(); }
+    lastDone = id; step = i;
+    var anyOpen = steps.some(function(s){ return s.type === 'ex' && exOpen(dkey, s.x); });
+    if(!anyOpen){ S.fin[dkey] = 1; save(); }
     render();
-    if(!left.length){ stopTimer(); return; }
-    var rest = x.rest, next = null;
-    if(DAYS[idx].circuit){
-      var rot = list.filter(function(y){ return !y.fin; }), pos = rot.indexOf(x);
-      if(pos >= 0){
-        for(k = 1; k <= rot.length; k++){
-          c = rot[(pos + k) % rot.length];
-          if(open(c)){ next = c; if(pos + k >= rot.length) rest = 90; break; }
-        }
-      }
-      if(!next){ next = left[0]; rest = x.fin ? 0 : 90; }
+    if(!anyOpen){ stopTimer(); return; }
+    var j = nextEx(steps, dkey, i), rest = x.rest, name;
+    if(circuit){
+      if(j < 0){ name = x.n; }
+      else { name = steps[j].x.n; if(x.fin) rest = 0; else if(steps[j].x.fin || j < i) rest = 90; }
     } else {
-      next = open(x) ? x : left[0];
+      name = exOpen(dkey, x) ? x.n : (j >= 0 ? steps[j].x.n : null);
     }
-    if(rest > 0 && next) startTimer('rest', rest, {name:next.n}); else stopTimer();
+    if(rest > 0 && name) startTimer('rest', rest, {name:name}); else stopTimer();
+  }
+  function go(v){
+    var steps = curSteps(), dkey = keyOf(sel);
+    if(v === 'prev') step = Math.max(0, step - 1);
+    else if(v === 'next') step = step >= steps.length ? steps.length : nextTarget(steps, dkey, step);
+    else step = Math.max(0, Math.min(steps.length, +v));
+    lastDone = null; render(); toCard();
+  }
+  function act(a){
+    var steps = curSteps(), dkey = keyOf(sel), idx = wdOf(sel), i;
+    if(a === 'review'){ for(i = 0; i < steps.length; i++){ if(steps[i].type === 'ex'){ step = i; break; } } }
+    else if(a === 'open'){ step = autoStep(steps, dkey, !!DAYS[idx].circuit); }
+    else if(sel > today){ return; }
+    else if(a === 'warm'){ S.wu[dkey] = 1; save(); step = nextTarget(steps, dkey, step); }
+    else if(a === 'cool'){ S.cd[dkey] = 1; save(); step = steps.length; }
+    lastDone = null; render(); toCard();
   }
 
   elList.addEventListener('click', function(e){
     var b = e.target.closest('button'); if(!b) return;
+    if(b.dataset.go){ go(b.dataset.go); return; }
+    if(b.dataset.act){ act(b.dataset.act); return; }
     var li = b.closest('.ex'); if(!li) return;
-    var x = findX(li.dataset.id); if(!x) return;
-    var dkey = keyOf(sel);
+    var steps = curSteps(), i = indexOfEx(steps, li.dataset.id); if(i < 0) return;
+    var x = steps[i].x, dkey = keyOf(sel);
     if(b.dataset.hist){ openHist[x.key] = !openHist[x.key]; render(); return; }
     if(sel > today) return;
     if(b.classList.contains('set')){
       primeAudio();
-      var idx = +b.dataset.i, c = got(dkey, x);
-      if(idx < c){ stopTimer(); setCount(dkey, x.id, idx); delete S.fin[dkey]; save(); render(); }
+      var k = +b.dataset.i, c = got(dkey, x);
+      if(k < c){ stopTimer(); setCount(dkey, x.id, k); delete S.fin[dkey]; save(); lastDone = null; render(); }
       else if(x.t){ startTimer('work', x.t, {id:x.id, name:x.n, idx:c, of:x.sets}); }
       else { complete(x.id); }
     } else if(b.dataset.step){
-      var rec = recOf(dkey, x.key), u = rec ? rec[1] : S.unit, step = u === 'k' ? 2.5 : 1, last = lastRec(x.key, dkey);
+      var rec = recOf(dkey, x.key), u = rec ? rec[1] : S.unit, stepBy = u === 'k' ? 2.5 : 1, last = lastRec(x.key, dkey);
       var base = rec ? rec[0] : (last && last.r[1] === u ? last.r[0] : 0);
-      setRec(dkey, x.key, Math.max(0, base + (+b.dataset.step) * step), u);
+      setRec(dkey, x.key, Math.max(0, base + (+b.dataset.step) * stepBy), u);
       render();
     } else if(b.dataset.uselast){
       var lr = lastRec(x.key, dkey);
       if(lr){ setRec(dkey, x.key, lr.r[0], lr.r[1]); render(); }
     }
   });
-  // typing a weight directly: save without rebuilding the list, so the next field keeps its focus
+  // typing a weight directly: save without rebuilding the card, so the field keeps its focus
   elList.addEventListener('change', function(e){
     var inp = e.target; if(!inp.classList || !inp.classList.contains('winp')) return;
-    var li = inp.closest('.ex'), x = li && findX(li.dataset.id);
-    if(!x || sel > today) return;
-    var dkey = keyOf(sel), rec = recOf(dkey, x.key), v = parseFloat(inp.value);
+    var li = inp.closest('.ex'), steps = curSteps(), i = li ? indexOfEx(steps, li.dataset.id) : -1;
+    if(i < 0 || sel > today) return;
+    var x = steps[i].x, dkey = keyOf(sel), rec = recOf(dkey, x.key), v = parseFloat(inp.value);
     setRec(dkey, x.key, v > 0 ? v : 0, rec ? rec[1] : S.unit);
     if(!(v > 0)) inp.value = '';
     var chip = li.querySelector('.wlast'); if(chip) chip.remove();
     renderCal();
   });
+  function goClick(e){ var b = e.target.closest('button'); if(b && b.dataset.go) go(b.dataset.go); }
+  elStrip.addEventListener('click', goClick);
+  elQueue.addEventListener('click', goClick);
 
   elWeek.addEventListener('click', function(e){
     var b = e.target.closest('button'); if(!b) return;
     var p = b.dataset.d.split('-');
-    sel = new Date(+p[0], +p[1] - 1, +p[2]);
-    if(sel.getMonth() !== view.getMonth() || sel.getFullYear() !== view.getFullYear()) view = new Date(sel.getFullYear(), sel.getMonth(), 1);
-    stopTimer(); render();
+    showDay(new Date(+p[0], +p[1] - 1, +p[2]));
   });
   document.querySelector('.cal-bar').addEventListener('click', function(e){
     var b = e.target.closest('button'); if(!b) return;
     if(b.dataset.cal){ S.cal = b.dataset.cal; view = new Date(sel.getFullYear(), sel.getMonth(), 1); save(); renderCal(); return; }
-    if(b.id === 'cal-today'){ sel = today; view = new Date(today.getFullYear(), today.getMonth(), 1); stopTimer(); render(); return; }
+    if(b.id === 'cal-today'){ showDay(today); return; }
     var dir = b.id === 'cal-prev' ? -1 : (b.id === 'cal-next' ? 1 : 0); if(!dir) return;
     if(S.cal === 'm'){ view = new Date(view.getFullYear(), view.getMonth() + dir, 1); renderCal(); }
-    else { sel = addDays(sel, 7 * dir); view = new Date(sel.getFullYear(), sel.getMonth(), 1); stopTimer(); render(); }
+    else showDay(addDays(sel, 7 * dir));
   });
   document.querySelector('.controls').addEventListener('click', function(e){
     var b = e.target.closest('button'); if(!b) return;
     if(b.dataset.dt != null){ S.dt = +b.dataset.dt; save(); render(); return; }
     if(b.dataset.unit){ S.unit = b.dataset.unit; save(); render(); return; }
-    if(b.dataset.lv != null) S.lv = +b.dataset.lv;
-    if(b.dataset.md) S.md = b.dataset.md;
-    save(); stopTimer(); render();
+    if(b.dataset.md){ S.md = b.dataset.md; save(); stopTimer(); resetStep(); render(); }
   });
 
+  resetStep();
   render();
   if(!reduced) requestAnimationFrame(loop);
 })();
